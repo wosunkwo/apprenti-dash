@@ -4,9 +4,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Entity
 public class Day {
+
+    
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -81,7 +84,18 @@ public class Day {
         this.lunchEnd = lunchEnd;
     }
 
-    // TODO: methods to calculate
+    /**
+     * Method to calculate daily working hours
+     * @return number of hours worked/day
+     */
+    public int calculateDailyHours(){
+        long diffInMillies = Math.abs(clockOut.getTime() - clockIn.getTime() -
+                (lunchEnd.getTime() - lunchStart.getTime()));
+        return (int)TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+    }
+
+    //get date without hours
+
 
 
 
