@@ -8,6 +8,8 @@
             <a th:if="${isLoggedIn == true}" th:href="@{'/logout'}">Logout</a>
             <a th:if="${isLoggedIn == false}" th:href="@{'/login'}">Login</a>
         </li>
+        <li><a th:href="@{'/summary'}">Summary Page</a></li>
+        <li><a th:href="@{'/recordHour'}">Clock In Page</a></li>
     </ul>
     <h3>Welcome, <span th:text="${userFirstName}"></span>!</h3>
 </div>
