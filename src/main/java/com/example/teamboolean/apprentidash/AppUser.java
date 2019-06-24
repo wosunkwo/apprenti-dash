@@ -19,17 +19,19 @@ public class AppUser implements UserDetails {
     String password;
     String firstName;
     String lastName;
+    String managerName;
 
     @OneToMany (mappedBy = "user")
     List<Day> days;
 
     public AppUser(){}
 
-    public AppUser(String username, String password, String firstName, String lastName) {
+    public AppUser(String username, String password, String firstName, String lastName, String managerName) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.managerName = managerName;
     }
 
     public long getId() {
@@ -70,6 +72,14 @@ public class AppUser implements UserDetails {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getManagerName() {
+        return managerName;
+    }
+
+    public void setManagerName(String managerName) {
+        this.managerName = managerName;
     }
 
     public List<Day> getDays() {

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.security.Principal;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Controller
@@ -52,11 +54,19 @@ public class ApprentiDashController {
     }
 
     @PostMapping("/signup")
-    public String addUser(String username, String password, String firstName, String lastName){
-        AppUser newUser = new AppUser(username, passwordEncoder.encode(password), firstName, lastName);
+    public String addUser(String username, String password, String firstName, String lastName, String managerName){
+        AppUser newUser = new AppUser(username, passwordEncoder.encode(password), firstName, lastName, managerName);
         userRepository.save(newUser);
         Authentication authentication = new UsernamePasswordAuthenticationToken(newUser, null, new ArrayList<>());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return "redirect:/";
+    }
+
+    @GetMapping("/summary")
+    public String getSummary(Principal p, Model m){
+        AppUser currentUser = userRepository.findByUsername(p.getName());
+        m.addAttribute("localDate", LocalDate.now());
+        m.addAttribute("user", currentUser);
+        return "summary";
     }
 }
