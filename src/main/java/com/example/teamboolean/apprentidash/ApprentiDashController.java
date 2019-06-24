@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.security.Principal;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -24,7 +25,21 @@ public class ApprentiDashController {
     PasswordEncoder passwordEncoder;
 
     @GetMapping("/")
-    public String getHome(){
+    public String getHome(Model m, Principal p){
+
+        //Check if the user is logged in and pass the user info to the model
+        boolean isLoggedIn;
+        String currentUserFirstName;
+        if(p == null){
+            isLoggedIn = false;
+            currentUserFirstName = "Visitor";
+        }else {
+            isLoggedIn = true;
+            currentUserFirstName = userRepository.findByUsername(p.getName()).getFirstName();
+        }
+        m.addAttribute("isLoggedIn", isLoggedIn);
+        m.addAttribute("userFirstName", currentUserFirstName);
+
         return "home";
     }
 
