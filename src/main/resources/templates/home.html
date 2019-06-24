@@ -5,6 +5,9 @@
     <title>Home</title>
 </head>
 <body>
+    <header>
+        <div th:replace="fragments/navbar :: navbar(${userFirstName}, ${isLoggedIn})"></div>
+    </header>
     <h1>Welcome to the</h1>
     <h1>Apprentice Dashboard</h1>
     <p>We can help make your OTJ clock-in process easier.</p>

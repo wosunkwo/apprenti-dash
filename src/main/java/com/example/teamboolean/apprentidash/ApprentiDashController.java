@@ -25,14 +25,18 @@ public class ApprentiDashController {
     @GetMapping("/")
     public String getHome(Model m, Principal p){
 
-        //Check if the user is logged in and pass the status to the model
+        //Check if the user is logged in and pass the user info to the model
         boolean isLoggedIn;
+        String currentUserFirstName;
         if(p == null){
             isLoggedIn = false;
+            currentUserFirstName = "Visitor";
         }else {
             isLoggedIn = true;
+            currentUserFirstName = userRepository.findByUsername(p.getName()).getFirstName();
         }
         m.addAttribute("isLoggedIn", isLoggedIn);
+        m.addAttribute("userFirstName", currentUserFirstName);
 
         return "home";
     }
