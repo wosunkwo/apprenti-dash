@@ -1,6 +1,7 @@
 package com.example.teamboolean.apprentidash;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -32,6 +34,8 @@ public class ApprentiDashController {
 
     @Autowired
     DayRepository dayRepository;
+
+    Day currentDay = new Day();
 
     @GetMapping("/")
     public String getHome(Model m, Principal p){
@@ -78,45 +82,68 @@ public class ApprentiDashController {
         return "recordHour";
     }
 
+
+//Route to handle our clock in button
     @PostMapping(value="/recordHour", params="clockIn=clockInValue")
-    public ModelAndView clockInSave() {
+    public ModelAndView clockInSave(Principal p) {
         ModelAndView modelAndView = new ModelAndView();
-
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
-        System.out.println(dtf.format(now));
-        
+
+        currentDay.setClockIn(now);
+        currentDay.setUser(userRepository.findByUsername(p.getName()));
+        dayRepository.save(currentDay);
+
         return modelAndView;
     }
 
+    //Route to handle our Lunch in button
     @PostMapping(value="/recordHour", params="lunchIn=lunchInValue")
-    public ModelAndView lunchInSave() {
+    public ModelAndView lunchInSave(Principal p) {
         ModelAndView modelAndView = new ModelAndView();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
-        System.out.println(dtf.format(now));
+
+
+        currentDay.setLunchStart(now);
+        currentDay.setUser(userRepository.findByUsername(p.getName()));
+        dayRepository.save(currentDay);
+
         return modelAndView;
     }
 
+    //Route to handle our lunch out button
     @PostMapping(value="/recordHour", params="lunchOut=lunchOutValue")
-    public ModelAndView lunchOutSave() {
+    public ModelAndView lunchOutSave(Principal p) {
         ModelAndView modelAndView = new ModelAndView();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
-        System.out.println(dtf.format(now));
+
+        currentDay.setLunchEnd(now);
+        currentDay.setUser(userRepository.findByUsername(p.getName()));
+        dayRepository.save(currentDay);
         return modelAndView;
     }
 
+    //Route to handle our clock out button
     @PostMapping(value="/recordHour", params="clockOut=clockOutValue")
-    public ModelAndView clockOutSave() {
+    public ModelAndView clockOutSave(Principal p) {
         ModelAndView modelAndView = new ModelAndView();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
-        System.out.println(dtf.format(now));
+        
+        currentDay.setClockOut(now);
+        currentDay.setUser(userRepository.findByUsername(p.getName()));
+        dayRepository.save(currentDay);
+
         return modelAndView;
     }
 
+//    public String buttonRenderHelper(){
+//        dayRepository.findById( )
+//    }
 
+//**************** End of the controller for handle Punch In page *************************//
 
 
     @GetMapping("/summary")
