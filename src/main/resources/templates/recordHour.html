@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title> Record Hour</title>
@@ -9,8 +11,16 @@
         <div th:replace="fragments/navbar :: navbar(${userFirstName}, ${isLoggedIn})"></div>
     </header>
 
+<!--<form  th:if="${!sessionStatus && !followerStatus} " action="/individualUser" method="GET" >-->
+<!--    <button style=" margin-bottom: 15px; background-color: #4CAF50; color: white;" name="username" type="submit" th:value="${currentUser.username}">Follow</button>-->
+<!--</form>-->
+
+<h2>TIME PERIOD</h2>
+<form action="/recordHour" method="POST">
+  
     <h2>TIME PERIOD</h2>
     <form action="/recordHour" method="POST">
+
 
         <button type="submit" name="clockIn"
                 value="clockInValue">Clock In</button>
