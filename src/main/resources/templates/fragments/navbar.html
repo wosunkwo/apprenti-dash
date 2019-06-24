@@ -3,6 +3,7 @@
 <div th:fragment="navbar(userFirstName, isLoggedIn)">
     <ul>
         <li><a th:href="@{'/'}" method="GET">Home</a></li>
+<!-- TODO: add other routes-->
         <li>
             <a th:if="${isLoggedIn == true}" th:href="@{'/logout'}">Logout</a>
             <a th:if="${isLoggedIn == false}" th:href="@{'/login'}">Login</a>
