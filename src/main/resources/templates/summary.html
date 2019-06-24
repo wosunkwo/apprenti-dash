@@ -5,6 +5,9 @@
     <title>Timesheet Summary</title>
 </head>
 <body>
+<header>
+    <div th:replace="fragments/navbar :: navbar(${userFirstName}, ${isLoggedIn})"></div>
+</header>
 <h2>Summary</h2>
 <div>
     <p>User name: <span th:text="${user.username}"></span></p>
