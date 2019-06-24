@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 public class AppUser implements UserDetails {
@@ -18,6 +19,9 @@ public class AppUser implements UserDetails {
     String password;
     String firstName;
     String lastName;
+
+    @OneToMany (mappedBy = "user")
+    List<Day> days;
 
     public AppUser(){}
 
@@ -66,6 +70,14 @@ public class AppUser implements UserDetails {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public List<Day> getDays() {
+        return days;
+    }
+
+    public void setDays(List<Day> days) {
+        this.days = days;
     }
 
     @Override
