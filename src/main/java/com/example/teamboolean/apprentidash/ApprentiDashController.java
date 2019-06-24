@@ -6,10 +6,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import java.security.Principal;
+
+import java.time.LocalDate;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 @Controller
 public class ApprentiDashController {
@@ -20,8 +30,25 @@ public class ApprentiDashController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    DayRepository dayRepository;
+
     @GetMapping("/")
-    public String getHome(){
+    public String getHome(Model m, Principal p){
+
+        //Check if the user is logged in and pass the user info to the model
+        boolean isLoggedIn;
+        String currentUserFirstName;
+        if(p == null){
+            isLoggedIn = false;
+            currentUserFirstName = "Visitor";
+        }else {
+            isLoggedIn = true;
+            currentUserFirstName = userRepository.findByUsername(p.getName()).getFirstName();
+        }
+        m.addAttribute("isLoggedIn", isLoggedIn);
+        m.addAttribute("userFirstName", currentUserFirstName);
+
         return "home";
     }
 
@@ -36,11 +63,68 @@ public class ApprentiDashController {
     }
 
     @PostMapping("/signup")
-    public String addUser(String username, String password, String firstName, String lastName){
-        AppUser newUser = new AppUser(username, passwordEncoder.encode(password), firstName, lastName);
+    public String addUser(String username, String password, String firstName, String lastName, String managerName){
+        AppUser newUser = new AppUser(username, passwordEncoder.encode(password), firstName, lastName, managerName);
         userRepository.save(newUser);
         Authentication authentication = new UsernamePasswordAuthenticationToken(newUser, null, new ArrayList<>());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return "redirect:/";
     }
+
+
+    //****** The controller methods to handle our Punch In page ******/
+    @GetMapping("/recordHour")
+    public String recordHour(){
+        return "recordHour";
+    }
+
+    @PostMapping(value="/recordHour", params="clockIn=clockInValue")
+    public ModelAndView clockInSave() {
+        ModelAndView modelAndView = new ModelAndView();
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println(dtf.format(now));
+        
+        return modelAndView;
+    }
+
+    @PostMapping(value="/recordHour", params="lunchIn=lunchInValue")
+    public ModelAndView lunchInSave() {
+        ModelAndView modelAndView = new ModelAndView();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println(dtf.format(now));
+        return modelAndView;
+    }
+
+    @PostMapping(value="/recordHour", params="lunchOut=lunchOutValue")
+    public ModelAndView lunchOutSave() {
+        ModelAndView modelAndView = new ModelAndView();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println(dtf.format(now));
+        return modelAndView;
+    }
+
+    @PostMapping(value="/recordHour", params="clockOut=clockOutValue")
+    public ModelAndView clockOutSave() {
+        ModelAndView modelAndView = new ModelAndView();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println(dtf.format(now));
+        return modelAndView;
+    }
+
+
+
+
+    @GetMapping("/summary")
+    public String getSummary(Principal p, Model m){
+        AppUser currentUser = userRepository.findByUsername(p.getName());
+        m.addAttribute("localDate", LocalDate.now());
+        m.addAttribute("user", currentUser);
+        return "summary";
+    }
+
 }
