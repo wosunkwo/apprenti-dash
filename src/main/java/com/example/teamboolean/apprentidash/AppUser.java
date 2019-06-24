@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
-public class User implements UserDetails {
+public class AppUser implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,9 +19,9 @@ public class User implements UserDetails {
     String firstName;
     String lastName;
 
-    public User(){}
+    public AppUser(){}
 
-    public User(String username, String password, String firstName, String lastName) {
+    public AppUser(String username, String password, String firstName, String lastName) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
