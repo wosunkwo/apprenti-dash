@@ -6,9 +6,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.security.Principal;
 import java.util.ArrayList;
 
 @Controller
@@ -21,7 +23,17 @@ public class ApprentiDashController {
     PasswordEncoder passwordEncoder;
 
     @GetMapping("/")
-    public String getHome(){
+    public String getHome(Model m, Principal p){
+
+        //Check if the user is logged in and pass the status to the model
+        boolean isLoggedIn;
+        if(p == null){
+            isLoggedIn = false;
+        }else {
+            isLoggedIn = true;
+        }
+        m.addAttribute("isLoggedIn", isLoggedIn);
+
         return "home";
     }
 

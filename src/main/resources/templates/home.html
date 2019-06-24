@@ -2,10 +2,22 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Home</title>
 </head>
 <body>
-<h1>Home</h1>
+    <h1>Welcome to the</h1>
+    <h1>Apprentice Dashboard</h1>
+    <p>We can help make your OTJ clock-in process easier.</p>
+
+    <div th:if="${isLoggedIn == false}">
+        <p>Before we get started, be sure to <a th:href="@{'/login'}" method="GET">log in</a> or
+            <a th:href="@{'/signup'}" method="GET">sign up</a>.</p>
+    </div>
+
+<!--  TODO: redirect to clock in page -->
+    <div th:if="${isLoggedIn == true}">
+        <p>Get started by clocking in.(Coming Soon)</p>
+    </div>
 
 </body>
 </html>
