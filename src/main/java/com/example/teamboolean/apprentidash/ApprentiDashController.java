@@ -9,11 +9,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import java.security.Principal;
 
 import java.time.LocalDate;
+
 import java.util.ArrayList;
+import java.util.Date;
 
 @Controller
 public class ApprentiDashController {
@@ -23,6 +29,9 @@ public class ApprentiDashController {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    DayRepository dayRepository;
 
     @GetMapping("/")
     public String getHome(Model m, Principal p){
@@ -62,6 +71,54 @@ public class ApprentiDashController {
         return "redirect:/";
     }
 
+
+    //****** The controller methods to handle our Punch In page ******/
+    @GetMapping("/recordHour")
+    public String recordHour(){
+        return "recordHour";
+    }
+
+    @PostMapping(value="/recordHour", params="clockIn=clockInValue")
+    public ModelAndView clockInSave() {
+        ModelAndView modelAndView = new ModelAndView();
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println(dtf.format(now));
+        
+        return modelAndView;
+    }
+
+    @PostMapping(value="/recordHour", params="lunchIn=lunchInValue")
+    public ModelAndView lunchInSave() {
+        ModelAndView modelAndView = new ModelAndView();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println(dtf.format(now));
+        return modelAndView;
+    }
+
+    @PostMapping(value="/recordHour", params="lunchOut=lunchOutValue")
+    public ModelAndView lunchOutSave() {
+        ModelAndView modelAndView = new ModelAndView();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println(dtf.format(now));
+        return modelAndView;
+    }
+
+    @PostMapping(value="/recordHour", params="clockOut=clockOutValue")
+    public ModelAndView clockOutSave() {
+        ModelAndView modelAndView = new ModelAndView();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println(dtf.format(now));
+        return modelAndView;
+    }
+
+
+
+
     @GetMapping("/summary")
     public String getSummary(Principal p, Model m){
         AppUser currentUser = userRepository.findByUsername(p.getName());
@@ -69,4 +126,5 @@ public class ApprentiDashController {
         m.addAttribute("user", currentUser);
         return "summary";
     }
+
 }
