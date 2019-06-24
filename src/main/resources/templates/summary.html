@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Timesheet Summary</title>
+</head>
+<body>
+<h2>Summary</h2>
+<div>
+    <p>User name: <span th:text="${user.username}"></span></p>
+    <p>Name: <span th:text="${user.lastName}"></span>,
+        <span th:text="${user.firstName}"></span>
+
+    </p>
+
+</div>
+<div>
+    <label for="report-select">Select range for the report:</label>
+    <select id="report-select">
+        <option value="weekly">Weekly</option>
+        <option value="biweekly">Bi-weekly</option>
+        <option value="monthly">Monthly</option>
+    </select>
+
+    <form action="/summary">
+        Date:<br>
+        <input type="date" name="month" th:value="${#temporals.format(localDate, 'yyyy-MM-dd')}">
+        <input type="submit">
+    </form>
+</div>
+
+<table class="tableTimesheet">
+    <thead>
+    <tr>
+        <th>Date</th>
+        <th>Day</th>
+        <th>Time In</th>
+        <th>Time Out</th>
+        <th>Lunch</th>
+        <th>Daily Worked Hours</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr th:each="persons : ${list}">
+
+    </tr>
+
+    </tbody>
+</table>
+
+</body>
+</html>

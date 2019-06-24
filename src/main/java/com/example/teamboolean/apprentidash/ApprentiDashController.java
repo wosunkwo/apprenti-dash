@@ -6,9 +6,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.security.Principal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Controller
@@ -42,5 +45,13 @@ public class ApprentiDashController {
         Authentication authentication = new UsernamePasswordAuthenticationToken(newUser, null, new ArrayList<>());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return "redirect:/";
+    }
+
+    @GetMapping("/summary")
+    public String getSummary(Principal p, Model m){
+        AppUser currentUser = userRepository.findByUsername(p.getName());
+        m.addAttribute("localDate", LocalDate.now());
+        m.addAttribute("user", currentUser);
+        return "summary";
     }
 }
