@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html>
-<!--xmlns:th="http://www.thymeleaf.org">-->
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Edit Page</title>
@@ -25,19 +24,19 @@
     </tr>
 
     <tr>
-        <td>Day 1</td>
-        <td>Date 1</td>
-        <td> <input id="timeIn" type="time" name="timeIn" value="09:00" step="1800"></td>
-        <td> <input id="timeOut" type="time" name="timeOut" value="09:00" step="1800"></td>
-        <td> <input id="Lunch" type="number" name="lunch" min="0" max="24"></td>
-        <td>3</td>
-        <td>
-            <form>
-                <input type = "submit" value="Edit">
-            </form>
-        </td>
-
+        <form action="/edit" method="POST">
+            <input type="hidden" name="dayId" th:value="${currentDay.getId()}">
+            <td th:text="${#temporals.dayOfWeekName(currentDay.getClockIn())}"></td>
+            <td th:text="${#temporals.format(currentDay.getClockIn(), 'MM-dd-yyyy')}"></td>
+            <td> <input id="clockIn" type="time" name="clockIn" th:value="${#temporals.format(currentDay.getClockIn(),'HH:mm')}" ></td>
+            <td> <input id="clockOut" type="time" name="clockOut" th:value="${#temporals.format(currentDay.getClockOut(),'HH:mm')}" ></td>
+            <td> <input id="lunchStart" type="time" name="lunchStart" th:value="${#temporals.format(currentDay.getLunchStart(),'HH:mm')}" ></td>
+            <td> <input id="lunchEnd" type="time" name="lunchEnd" th:value="${#temporals.format(currentDay.getLunchEnd(),'HH:mm')}"></td>
+            <td th:text="${#numbers.formatDecimal(currentDay.calculateDailyHours(), 1, 2)}"></td>
+            <td> <input type="submit" value="Change"> </td>
+        </form>
     </tr>
+
 
 </table>
 

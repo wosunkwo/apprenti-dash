@@ -10,7 +10,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -167,18 +169,34 @@ public class ApprentiDashController {
 
 
     /************************************ Controller to handle the Edit page ***************************************************************************/
-    @GetMapping("/edit")
-    public String getEdit(Model m){
-        LocalDate date = LocalDate.now();
-        LocalDateTime startTime = LocalDateTime.of(date, LocalTime.MIDNIGHT);
-        ArrayList<LocalTime> timeInterval = new ArrayList<>();
-        do {
-            timeInterval.add(startTime.toLocalTime());
-            startTime = startTime.plus(Duration.ofHours(0).plusMinutes(15));
-        } while (date.equals(startTime.toLocalDate()));
-        m.addAttribute("timeInterval", timeInterval);
+    @GetMapping("/edit/{dayId}")
+    public String getEdit(@PathVariable long dayId, Model m, Principal p) {
+        Day currentDay = dayRepository.findById(dayId).get();
+        AppUser currentUser = userRepository.findByUsername(p.getName());
+        if(!currentUser.days.contains(currentDay))
+            return "error";
+        else{
+            m.addAttribute("currentDay", currentDay);
+            return "edit";
+        }
+    }
 
-        return "edit";
+    @PostMapping("/edit")
+    public String postEdit(long dayId,String clockIn, String clockOut, String lunchStart, String lunchEnd){
+        Day currentDay = dayRepository.findById(dayId).get();
+        LocalTime clockInLocalTime = LocalTime.parse(clockIn);
+        LocalTime clockOutLocalTime = LocalTime.parse(clockOut);
+        LocalTime lunchStartLocalTime = LocalTime.parse(lunchStart);
+        LocalTime lunchEndLocalTime = LocalTime.parse(lunchEnd);
+
+        currentDay.setClockIn(currentDay.getClockIn().withHour(clockInLocalTime.getHour()).withMinute(clockInLocalTime.getMinute()));
+        currentDay.setClockOut(currentDay.getClockOut().withHour(clockOutLocalTime.getHour()).withMinute(clockOutLocalTime.getMinute()));
+        currentDay.setLunchStart(currentDay.getLunchStart().withHour(lunchStartLocalTime.getHour()).withMinute(lunchStartLocalTime.getMinute()));
+        currentDay.setLunchEnd(currentDay.getLunchEnd().withHour(lunchEndLocalTime.getHour()).withMinute(lunchEndLocalTime.getMinute()));
+
+        dayRepository.save(currentDay);
+
+        return "redirect:/summary";
     }
 
 
