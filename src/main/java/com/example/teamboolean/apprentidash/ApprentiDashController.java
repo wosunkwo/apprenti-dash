@@ -27,6 +27,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import static java.time.LocalDate.now;
+
 @Controller
 public class ApprentiDashController {
 
@@ -68,8 +70,8 @@ public class ApprentiDashController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return "redirect:/";
     }
-    
-    //****** The controller methods to handle our Punch In page ******/
+
+    /********************************* The controller methods to handle our Punch In page **************************************************************/
     @GetMapping("/recordHour")
     public String recordHour(Model m){
         String todayDate =  java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneOffset.UTC));
@@ -115,16 +117,36 @@ public class ApprentiDashController {
             return "clockOut";
         return null;
     }
-//**************** End of the controller for handle Punch In page *************************//
+/******************************** End of the controller for handle Punch In page ********************************************************************/
 
     @GetMapping("/summary")
     public String getSummary(Principal p, Model m){
         loggedInStatusHelper(m, p);
         AppUser currentUser = userRepository.findByUsername(p.getName());
-        m.addAttribute("localDate", LocalDate.now());
+        m.addAttribute("localDate", now());
         m.addAttribute("user", currentUser);
         return "summary";
     }
+
+
+
+    /************************************ Controller to handle the Edit page ***************************************************************************/
+    @GetMapping("/edit")
+    public String getEdit(Model m){
+        LocalDate date = LocalDate.now();
+        LocalDateTime startTime = LocalDateTime.of(date, LocalTime.MIDNIGHT);
+        ArrayList<LocalTime> timeInterval = new ArrayList<>();
+        do {
+            timeInterval.add(startTime.toLocalTime());
+            startTime = startTime.plus(Duration.ofHours(0).plusMinutes(15));
+        } while (date.equals(startTime.toLocalDate()));
+        m.addAttribute("timeInterval", timeInterval);
+
+        return "edit";
+    }
+
+
+    /************************************ End of Controller to handle the Edit page ***************************************************************************/
 
 
     //Checks if the user is logged in and sets the model attributes accordingly per the navbar requirements
