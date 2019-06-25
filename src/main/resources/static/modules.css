@@ -1,0 +1,38 @@
+.navbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: baseline;
+}
+
+.navbar h3 {
+  padding: 10px;
+}
+
+.logout_in {
+  padding-right: 50px;
+}
+
+.navbar ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 1 em;
+}
+
+.navbar li {
+  padding: 10px;
+}
+
+.navbar li:hover {
+  background-color: #B2EBF2;
+}
+
+.navbar ul a {
+  text-decoration: none;
+  color: inherit;
+}
+
+body {
+  padding: 4em;
+}
