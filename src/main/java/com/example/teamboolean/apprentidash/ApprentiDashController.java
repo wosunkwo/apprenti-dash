@@ -127,7 +127,7 @@ public class ApprentiDashController {
         boolean isLoggedIn;
         String currentUserFirstName;
 
-        //Check if the user is logged in and pass the user info to the model
+        //Check if the user is logged in and sets the variables
         if(p == null){
             isLoggedIn = false;
             currentUserFirstName = "Visitor";
