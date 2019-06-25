@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Sign Up</title>
+    <link rel="stylesheet" type="text/css" href="reset.css">
+    <link rel="stylesheet" type="text/css" href="base.css">
+    <link rel="stylesheet" type="text/css" href="layout.css">
+    <link rel="stylesheet" type="text/css" href="modules.css">
 </head>
 <body>
     <header>
-        <div th:replace="fragments/navbar :: navbar(${userFirstName}, ${isLoggedIn})"></div>
+        <div th:replace="fragments/navbar :: navbar(${userFirstName}, ${isLoggedIn}, ${currentPage})"></div>
     </header>
-    <h2>Sign up</h2>
+    <h2 class="sign_up">Sign up</h2>
     <form action="/signup" method="POST">
         <input type="text" name="username" placeholder="User Name" id="username" required><br>
         <input type="password" name="password" placeholder="Password" id="password" required><br>

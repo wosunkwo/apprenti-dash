@@ -1,0 +1,77 @@
+
+/* Nav Bar */
+.navbar {
+  /* Photo by Murray Campbell on Unsplash https://unsplash.com/photos/B_TdfGFuGwA */
+  background-image: url("/images/navbar_background_darker.jpg");
+  font-size: 20px;
+  color: #fafafa;
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: baseline;
+}
+
+.navbar h3 {
+  padding: 10px;
+}
+
+/* TODO: Combine logout_in styling with navbar lis. 
+  Only difference right now is that logout_in needs 50px margin right. */
+.logout_in {
+  margin-right: 50px;
+  padding: 5px;
+  color: black;
+  text-decoration: none;
+  background-color: #fafafa;
+  border-radius: 2px;
+}
+
+.logout_in:hover {
+  color: #fafafa;
+  background-color: #323232;
+  box-shadow: 25px;
+  border-radius: 5px;
+}
+
+.navbar ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 1 em;
+}
+
+.navbar li {
+  color: black;
+  padding: 10px;
+  margin: 5px;
+  background-color: #fafafa;
+  border-radius: 2px;
+}
+
+.navbar li:hover {
+  color: #fafafa;
+  background-color: #323232;
+  box-shadow: 25px;
+  border-radius: 5px;
+}
+
+.navbar ul a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Home Page */
+.home_title {
+  padding: 60px;
+}
+
+.home_cta {
+  padding: 20px;
+}
+
+/* Sign Up Page */
+
+.sign_up {
+  margin: 20px;
+}
