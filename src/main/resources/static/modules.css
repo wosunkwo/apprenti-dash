@@ -1,6 +1,11 @@
 
 /* Nav Bar */
 .navbar {
+  /* Photo by Murray Campbell on Unsplash https://unsplash.com/photos/B_TdfGFuGwA */
+  background-image: url("/images/navbar_background_darker.jpg");
+  font-size: 20px;
+  color: #fafafa;
+  padding: 20px;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -13,6 +18,10 @@
 
 .logout_in {
   padding-right: 50px;
+  text-decoration: underline;
+  color: inherit;
+  background-color: #333333;
+  border-radius: 25px;
 }
 
 .navbar ul {
@@ -23,11 +32,16 @@
 }
 
 .navbar li {
+  color: black;
   padding: 10px;
+  margin: 5px;
+  background-color: #bfb9b9;
+  border-radius: 2px;
 }
 
 .navbar li:hover {
-  background-color: #7FDBFF;
+  color: black;
+  background-color: #fafafa;
   border-radius: 5px;
 }
 
