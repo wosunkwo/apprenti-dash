@@ -70,7 +70,8 @@ public class ApprentiDashController {
     
     //****** The controller methods to handle our Punch In page ******/
     @GetMapping("/recordHour")
-    public String recordHour(Model m){
+    public String recordHour(Model m, Principal p){
+        loggedInStatusHelper(m, p);
         m.addAttribute("workStatus", buttonRenderHelper());
 
         return "recordHour";
