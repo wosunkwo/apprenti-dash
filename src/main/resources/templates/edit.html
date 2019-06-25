@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
+<!--xmlns:th="http://www.thymeleaf.org">-->
 <head>
     <meta charset="UTF-8">
     <title>Edit Page</title>
@@ -26,11 +27,16 @@
     <tr>
         <td>Day 1</td>
         <td>Date 1</td>
+        <td> <input id="timeIn" type="time" name="timeIn" value="09:00" step="1800"></td>
+        <td> <input id="timeOut" type="time" name="timeOut" value="09:00" step="1800"></td>
+        <td> <input id="Lunch" type="number" name="lunch" min="0" max="24"></td>
+        <td>3</td>
         <td>
-            <select>
-                <option value="volvo" th:each = "time : ${timeInterval}" th:text="${time}"> </option>
-            </select>
+            <form>
+                <input type = "submit" value="Edit">
+            </form>
         </td>
+
     </tr>
 
 </table>
