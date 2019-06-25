@@ -22,11 +22,13 @@ import java.time.format.DateTimeFormatter;
 import java.security.Principal;
 
 import java.time.format.FormatStyle;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
 
 
 @Controller
@@ -64,11 +66,15 @@ public class ApprentiDashController {
 
     @PostMapping("/signup")
     public String addUser(String username, String password, String firstName, String lastName, String managerName){
-        AppUser newUser = new AppUser(username, passwordEncoder.encode(password), firstName, lastName, managerName);
-        userRepository.save(newUser);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(newUser, null, new ArrayList<>());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return "redirect:/";
+        if (!checkUserName(username)) {
+            AppUser newUser = new AppUser(username, passwordEncoder.encode(password), firstName, lastName, managerName);
+            userRepository.save(newUser);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(newUser, null, new ArrayList<>());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return "redirect:/";
+        }else {
+            return "duplicateUsername";
+        }
     }
     
     //****** The controller methods to handle our Punch In page ******/
@@ -176,6 +182,22 @@ public class ApprentiDashController {
         //add the attributes to the passed in model
         m.addAttribute("isLoggedIn", isLoggedIn);
         m.addAttribute("userFirstName", currentUserFirstName);
+    }
+
+    //help function to check if the username exist in database
+    public boolean checkUserName(String username){
+        Iterable<AppUser> allUsers =  userRepository.findAll();
+        List<String> allUsername = new ArrayList<>();
+
+        for(AppUser appUser : allUsers){
+            allUsername.add(appUser.username);
+        }
+
+        if(allUsername.contains(username)){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }
