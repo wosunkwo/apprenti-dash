@@ -16,16 +16,18 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.constraints.Null;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 import java.security.Principal;
 
-import java.time.LocalDate;
-
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
 
 @Controller
 public class ApprentiDashController {
@@ -72,8 +74,9 @@ public class ApprentiDashController {
     //****** The controller methods to handle our Punch In page ******/
     @GetMapping("/recordHour")
     public String recordHour(Model m){
+        String todayDate =  java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneOffset.UTC));
         m.addAttribute("workStatus", buttonRenderHelper());
-
+        m.addAttribute("todayDate", todayDate);
         return "recordHour";
     }
 
