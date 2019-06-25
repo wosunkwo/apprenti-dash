@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<!--xmlns:th="http://www.thymeleaf.org">-->
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Page</title>
+</head>
+<body>
+<style>
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+</style>
+
+<table class = "editTable">
+    <h3>Edit your hours</h3>
+    <tr>
+        <th>DAY</th>
+        <th>DATE</th>
+        <th>TIME IN</th>
+        <th>TIME OUT</th>
+        <th>LUNCH</th>
+        <th>DAILY WORKED HOURS</th>
+    </tr>
+
+    <tr>
+        <td>Day 1</td>
+        <td>Date 1</td>
+        <td> <input id="timeIn" type="time" name="timeIn" value="09:00" step="1800"></td>
+        <td> <input id="timeOut" type="time" name="timeOut" value="09:00" step="1800"></td>
+        <td> <input id="Lunch" type="number" name="lunch" min="0" max="24"></td>
+        <td>3</td>
+        <td>
+            <form>
+                <input type = "submit" value="Edit">
+            </form>
+        </td>
+
+    </tr>
+
+</table>
+
+</body>
+</html>
