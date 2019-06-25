@@ -11,20 +11,35 @@
         <div th:replace="fragments/navbar :: navbar(${userFirstName}, ${isLoggedIn})"></div>
     </header>
 
+    <p>Today is <span th:text="${todayDate}"></span> </p>
+
 <h2>TIME PERIOD</h2>
 <form action="/recordHour" method="POST">
-  
-    <button th:if="${workStatus == 'clockIn'}" type="submit" name="name"
-            value="value">Clock In</button>
 
-    <button th:if="${workStatus == 'lunchIn'}" type="submit" name="name"
-            value="value">Lunch In</button>
+    <div class="clockInDiv" th:if="${workStatus == 'clockIn'}">
+        <p>You can clock in when you're ready to start work </p>
+        <button type="submit" name="name"
+                value="value">Clock In</button>
+    </div>
 
-    <button th:if="${workStatus == 'lunchOut'}" type="submit" name="name"
-            value="value">Lunch Out</button>
+    <div class="lunchInDiv" th:if="${workStatus == 'lunchIn'}">
+        <p>You can check out for lunch when you're ready to go to lunch </p>
+        <button  type="submit" name="name"
+                 value="value">Lunch In</button>
+    </div>
 
-    <button th:if="${workStatus == 'clockOut'}" type="submit" name="name"
-            value="value">Clock Out</button>
+    <div class="lunchOutDiv" th:if="${workStatus == 'lunchOut'}">
+        <p>You can check back in when you're done with lunch </p>
+        <button  type="submit" name="name"
+                 value="value">Lunch Out</button>
+    </div>
+
+    <div class="clockOutDiv" th:if="${workStatus == 'clockOut'}">
+        <p>You can clock out when you're done for the day </p>
+        <button type="submit" name="name"
+                value="value">Clock Out</button>
+    </div>
+
 </form>
 
 
