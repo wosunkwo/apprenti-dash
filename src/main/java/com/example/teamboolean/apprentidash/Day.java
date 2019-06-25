@@ -91,11 +91,11 @@ public class Day {
      * Method to calculate daily working hours
      * @return number of hours worked/day
      */
-    public int calculateDailyHours(){
+    public double calculateDailyHours(){
         long dailyWork = Math.abs(Duration.between(clockIn, clockOut).toMinutes());
         long lunch = Math.abs(Duration.between(lunchStart, lunchEnd).toMinutes());
 
-        return (int)(dailyWork - lunch)/ 60;
+        return (double)(dailyWork - lunch)/ 60;
     }
 
     //get lunch duration
