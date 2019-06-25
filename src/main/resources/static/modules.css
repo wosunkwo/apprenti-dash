@@ -16,11 +16,13 @@
   padding: 10px;
 }
 
+/* TODO: Combine logout_in styling with navbar lis. 
+  Only difference right now is that logout_in needs 50px margin right. */
 .logout_in {
   margin-right: 50px;
   padding: 5px;
   color: black;
-  text-decoration: underline;
+  text-decoration: none;
   background-color: #fafafa;
   border-radius: 2px;
 }
@@ -66,4 +68,10 @@
 
 .home_cta {
   padding: 20px;
+}
+
+/* Sign Up Page */
+
+.sign_up {
+  margin: 20px;
 }

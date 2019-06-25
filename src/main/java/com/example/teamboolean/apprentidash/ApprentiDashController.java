@@ -44,6 +44,19 @@ public class ApprentiDashController {
     Day currentDay = new Day();
 
     @GetMapping("/")
+    public RedirectView getRoot(Model m, Principal p){
+
+        // If the user is logged in, redirect them to clock-in
+        // otherwise, direct them to home page
+        // Huge thanks to David for the idea!
+        if(p != null){
+            return new RedirectView("/recordHour");
+        } else {
+            return new RedirectView("/home");
+        }
+    }
+
+    @GetMapping("/home")
     public String getHome(Model m, Principal p){
         //Sets the necessary variables for the nav bar
         loggedInStatusHelper(m, p);
@@ -53,13 +66,17 @@ public class ApprentiDashController {
 
     @GetMapping("/login")
     public String getLogin(Model m, Principal p){
+        //Sets the necessary variables for the nav bar
         loggedInStatusHelper(m, p);
+        m.addAttribute("currentPage", "login");
         return "login";
     }
 
     @GetMapping("/signup")
     public String startSignUp(Model m, Principal p){
+        //Sets the necessary variables for the nav bar
         loggedInStatusHelper(m, p);
+        m.addAttribute("currentPage", "signup");
         return "signup";
     }
 
@@ -75,7 +92,10 @@ public class ApprentiDashController {
     //****** The controller methods to handle our Punch In page ******/
     @GetMapping("/recordHour")
     public String recordHour(Model m, Principal p){
+        //Sets the necessary variables for the nav bar
         loggedInStatusHelper(m, p);
+        m.addAttribute("currentPage", "clock_in");
+        //Sets status for knowing which button to show
         String todayDate =  java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneOffset.UTC));
         m.addAttribute("workStatus", buttonRenderHelper());
         m.addAttribute("todayDate", todayDate);
@@ -123,7 +143,10 @@ public class ApprentiDashController {
 
     @GetMapping("/summary")
     public String getSummary(Principal p, Model m, String fromDate, String toDate){
+        //Sets the necessary variables for the nav bar
         loggedInStatusHelper(m, p);
+        m.addAttribute("currentPage", "summary");
+
         AppUser currentUser = userRepository.findByUsername(p.getName());
         m.addAttribute("localDate", LocalDate.now());
         m.addAttribute("user", currentUser);

@@ -17,8 +17,14 @@
         <p>We can help make your OTJ clock-in process easier.</p>
 
         <div th:if="${isLoggedIn == false}">
-            <p class="home_cta">Before we get started, be sure to <a th:href="@{'/login'}" method="GET">log in</a> or
+            <p class="home_cta">Before we get started, be sure to log in or
                 <a th:href="@{'/signup'}" method="GET">sign up</a>.</p>
+<!--            <h3>Log In:</h3>-->
+            <form action="/login" method="POST">
+                <input type=text name="username"  placeholder="User name" required/>
+                <input type=password name="password" placeholder="password" required/>
+                <input type="submit"/>
+            </form>
         </div>
 
         <div th:if="${isLoggedIn == true}">

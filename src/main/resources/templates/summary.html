@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Timesheet Summary</title>
+    <link rel="stylesheet" type="text/css" href="reset.css">
+    <link rel="stylesheet" type="text/css" href="base.css">
+    <link rel="stylesheet" type="text/css" href="layout.css">
+    <link rel="stylesheet" type="text/css" href="modules.css">
 </head>
 <body>
 <header>
-    <div th:replace="fragments/navbar :: navbar(${userFirstName}, ${isLoggedIn})"></div>
+    <div th:replace="fragments/navbar :: navbar(${userFirstName}, ${isLoggedIn}, ${currentPage})"></div>
 </header>
 <h2>Summary</h2>
 <div>
