@@ -93,14 +93,17 @@ public class Day {
      */
     public double calculateDailyHours(){
         long dailyWork = Math.abs(Duration.between(clockIn, clockOut).toMinutes());
-        long lunch = Math.abs(Duration.between(lunchStart, lunchEnd).toMinutes());
+        long lunch = (long)calculateLunch();
 
         return (double)(dailyWork - lunch)/ 60;
     }
 
-    //get lunch duration
-    public int calculateLunch(){
-        return (int)Math.abs(Duration.between(lunchStart, lunchEnd).toHours());
+    /**
+     * Method to calculate duration of lunch
+     * @return lunch duration in minutes
+     */
+    public double calculateLunch(){
+        return (double)Math.abs(Duration.between(lunchStart, lunchEnd).toMinutes());
     }
 
 
