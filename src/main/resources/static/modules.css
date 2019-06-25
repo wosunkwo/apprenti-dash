@@ -1,3 +1,5 @@
+
+/* Nav Bar */
 .navbar {
   display: flex;
   flex-direction: row;
@@ -25,7 +27,8 @@
 }
 
 .navbar li:hover {
-  background-color: #B2EBF2;
+  background-color: #c3f8ff;
+  border-radius: 5px;
 }
 
 .navbar ul a {
@@ -33,6 +36,11 @@
   color: inherit;
 }
 
-body {
-  padding: 4em;
+/* Home Page */
+.home_title {
+  padding: 60px;
+}
+
+.home_cta {
+  padding: 20px;
 }

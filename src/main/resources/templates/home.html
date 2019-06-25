@@ -12,17 +12,18 @@
     <header>
         <div th:replace="fragments/navbar :: navbar(${userFirstName}, ${isLoggedIn})"></div>
     </header>
-    <h1>Apprentice Dashboard</h1>
-    <p>We can help make your OTJ clock-in process easier.</p>
+    <div class="main_content">
+        <h1 class="home_title">Apprentice Dashboard</h1>
+        <p>We can help make your OTJ clock-in process easier.</p>
 
-    <div th:if="${isLoggedIn == false}">
-        <p>Before we get started, be sure to <a th:href="@{'/login'}" method="GET">log in</a> or
-            <a th:href="@{'/signup'}" method="GET">sign up</a>.</p>
-    </div>
+        <div th:if="${isLoggedIn == false}">
+            <p class="home_cta">Before we get started, be sure to <a th:href="@{'/login'}" method="GET">log in</a> or
+                <a th:href="@{'/signup'}" method="GET">sign up</a>.</p>
+        </div>
 
-<!--  TODO: redirect to clock in page -->
-    <div th:if="${isLoggedIn == true}">
-        <p>Get started by <a th:href="@{'/recordHour'}">clocking in</a>.</p>
+        <div th:if="${isLoggedIn == true}">
+            <p class="home_cta">Get started by <a th:href="@{'/recordHour'}">clocking in</a>.</p>
+        </div>
     </div>
 
 </body>

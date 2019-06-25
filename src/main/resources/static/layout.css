@@ -1,18 +1,29 @@
-
 body {
+  padding: 4em;
+  background-color: #e6f2ff94;
+}
+
+p {
+  font-size: 1em;
+  text-align: center;
+}
+
+.main_content {
   display: flex;
-  justify-content: center;
   flex-direction: column;
 }
 
 h1 {
   font-size: 3.5em;
+  text-align: center;
 }
 
 h2 {
   font-size: 3em;
+  text-align: center;
 }
 
 h3 {
   font-size: 2em;
+  text-align: center;
 }
