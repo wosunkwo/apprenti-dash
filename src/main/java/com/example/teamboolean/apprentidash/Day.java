@@ -3,7 +3,9 @@ package com.example.teamboolean.apprentidash;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.Duration;
 import java.time.LocalDateTime;
+
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -90,13 +92,16 @@ public class Day {
      * @return number of hours worked/day
      */
     public int calculateDailyHours(){
-        long diffInMillies = Math.abs(clockOut.getTime() - clockIn.getTime() -
-                (lunchEnd.getTime() - lunchStart.getTime()));
-        return (int)TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        long dailyWork = Math.abs(Duration.between(clockIn, clockOut).toMinutes());
+        long lunch = Math.abs(Duration.between(lunchStart, lunchEnd).toMinutes());
+
+        return (int)(dailyWork - lunch)/ 60;
     }
 
-    //get date without hours
-
+    //get lunch duration
+    public int calculateLunch(){
+        return (int)Math.abs(Duration.between(lunchStart, lunchEnd).toHours());
+    }
 
 
 
