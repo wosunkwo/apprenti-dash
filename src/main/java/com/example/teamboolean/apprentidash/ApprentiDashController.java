@@ -47,6 +47,7 @@ public class ApprentiDashController {
     public String getHome(Model m, Principal p){
         //Sets the necessary variables for the nav bar
         loggedInStatusHelper(m, p);
+        m.addAttribute("currentPage", "home");
         return "home";
     }
 

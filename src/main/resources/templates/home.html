@@ -10,7 +10,7 @@
 </head>
 <body>
     <header>
-        <div th:replace="fragments/navbar :: navbar(${userFirstName}, ${isLoggedIn})"></div>
+        <div th:replace="fragments/navbar :: navbar(${userFirstName}, ${isLoggedIn}, ${currentPage})"></div>
     </header>
     <div class="main_content">
         <h1 class="home_title">Apprentice Dashboard</h1>

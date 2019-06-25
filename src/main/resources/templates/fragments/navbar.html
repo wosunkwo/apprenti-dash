@@ -1,14 +1,14 @@
 
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="navbar(userFirstName, isLoggedIn)" class="navbar">
+<div th:fragment="navbar(userFirstName, isLoggedIn, currentPage)" class="navbar">
     <h3>Welcome, <span th:text="${userFirstName}"></span>!</h3>
 <!-- Displays Log in or log out depending on logged in status-->
-    <a class="logout_in" th:if="${isLoggedIn == true}" th:href="@{'/logout'}">Logout</a>
-    <a class="logout_in" th:if="${isLoggedIn == false}" th:href="@{'/login'}">Login</a>
+    <a class="logout_in" th:if="${isLoggedIn == true && currentPage != 'home'}" th:href="@{'/logout'}">Logout</a>
+    <a class="logout_in" th:if="${isLoggedIn == false && currentPage != 'home'}" th:href="@{'/login'}">Login</a>
     <ul>
-        <li><a th:href="@{'/'}" method="GET">Home</a></li>
-        <li><a th:href="@{'/summary'}">Hours Summary</a></li>
-        <li><a th:href="@{'/recordHour'}">Clock In</a></li>
+        <li th:if="${currentPage != 'home'}"><a th:href="@{'/'}" method="GET">Home</a></li>
+        <li th:if="${currentPage != 'home'}"><a th:href="@{'/summary'}">Hours Summary</a></li>
+        <li th:if="${currentPage != 'home'}"><a th:href="@{'/recordHour'}">Clock In</a></li>
     </ul>
 
 </div>
