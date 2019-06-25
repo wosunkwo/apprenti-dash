@@ -42,30 +42,20 @@ public class ApprentiDashController {
 
     @GetMapping("/")
     public String getHome(Model m, Principal p){
-
-        //Check if the user is logged in and pass the user info to the model
-        boolean isLoggedIn;
-        String currentUserFirstName;
-        if(p == null){
-            isLoggedIn = false;
-            currentUserFirstName = "Visitor";
-        }else {
-            isLoggedIn = true;
-            currentUserFirstName = userRepository.findByUsername(p.getName()).getFirstName();
-        }
-        m.addAttribute("isLoggedIn", isLoggedIn);
-        m.addAttribute("userFirstName", currentUserFirstName);
-
+        //Sets the necessary variables for the nav bar
+        loggedInStatusHelper(m, p);
         return "home";
     }
 
     @GetMapping("/login")
-    public String getLogin(){
+    public String getLogin(Model m, Principal p){
+        loggedInStatusHelper(m, p);
         return "login";
     }
 
     @GetMapping("/signup")
-    public String startSignUp(){
+    public String startSignUp(Model m, Principal p){
+        loggedInStatusHelper(m, p);
         return "signup";
     }
 
@@ -82,6 +72,7 @@ public class ApprentiDashController {
     @GetMapping("/recordHour")
     public String recordHour(Model m){
         m.addAttribute("workStatus", buttonRenderHelper());
+
         return "recordHour";
     }
 
@@ -126,10 +117,33 @@ public class ApprentiDashController {
 
     @GetMapping("/summary")
     public String getSummary(Principal p, Model m){
+        loggedInStatusHelper(m, p);
         AppUser currentUser = userRepository.findByUsername(p.getName());
         m.addAttribute("localDate", LocalDate.now());
         m.addAttribute("user", currentUser);
         return "summary";
+    }
+
+
+    //Checks if the user is logged in and sets the model attributes accordingly per the navbar requirements
+    private void loggedInStatusHelper(Model m, Principal p){
+
+        //Navbar required variables for knowing if user is logged in and their name for display
+        boolean isLoggedIn;
+        String currentUserFirstName;
+
+        //Check if the user is logged in and pass the user info to the model
+        if(p == null){
+            isLoggedIn = false;
+            currentUserFirstName = "Visitor";
+        }else {
+            isLoggedIn = true;
+            currentUserFirstName = userRepository.findByUsername(p.getName()).getFirstName();
+        }
+
+        //add the attributes to the passed in model
+        m.addAttribute("isLoggedIn", isLoggedIn);
+        m.addAttribute("userFirstName", currentUserFirstName);
     }
 
 }

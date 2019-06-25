@@ -1,14 +1,19 @@
 <!DOCTYPE html>
+
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title> Record Hour</title>
 </head>
 <body>
+    <header>
+        <div th:replace="fragments/navbar :: navbar(${userFirstName}, ${isLoggedIn})"></div>
+    </header>
 
 <h2>TIME PERIOD</h2>
 <form action="/recordHour" method="POST">
-
+  
     <button th:if="${workStatus == 'clockIn'}" type="submit" name="name"
             value="value">Clock In</button>
 
@@ -21,9 +26,6 @@
     <button th:if="${workStatus == 'clockOut'}" type="submit" name="name"
             value="value">Clock Out</button>
 </form>
-
-
-
 
 
 

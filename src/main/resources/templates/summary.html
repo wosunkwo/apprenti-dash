@@ -5,6 +5,9 @@
     <title>Timesheet Summary</title>
 </head>
 <body>
+<header>
+    <div th:replace="fragments/navbar :: navbar(${userFirstName}, ${isLoggedIn})"></div>
+</header>
 <h2>Summary</h2>
 <div>
     <p>User name: <span th:text="${user.username}"></span></p>
@@ -34,8 +37,8 @@
 <table class="tableTimesheet">
     <thead>
     <tr>
-        <th>Date</th>
         <th>Day</th>
+        <th>Date</th>
         <th>Time In</th>
         <th>Time Out</th>
         <th>Lunch</th>
@@ -44,9 +47,12 @@
     </thead>
     <tbody>
 
-    <tr th:each="persons : ${list}">
-
-    </tr>
+    <!--<tr th:each="day : ${days}">-->
+        <!--<td text="Sunday"></td>-->
+        <!--<td th:text="${day.}">Onions</td>-->
+        <!--<td th:text="${prod.price}">2.41</td>-->
+        <!--<td th:text="${prod.inStock}? #{true} : #{false}">yes</td>-->
+    <!--</tr>-->
 
     </tbody>
 </table>

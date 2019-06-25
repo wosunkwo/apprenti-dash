@@ -3,11 +3,16 @@ package com.example.teamboolean.apprentidash;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.Duration;
 import java.time.LocalDateTime;
+
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Entity
 public class Day {
+
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -82,7 +87,24 @@ public class Day {
         this.lunchEnd = lunchEnd;
     }
 
-    // TODO: methods to calculate
+    /**
+     * Method to calculate daily working hours
+     * @return number of hours worked/day
+     */
+    public double calculateDailyHours(){
+        long dailyWork = Math.abs(Duration.between(clockIn, clockOut).toMinutes());
+        long lunch = (long)calculateLunch();
+
+        return (double)(dailyWork - lunch)/ 60;
+    }
+
+    /**
+     * Method to calculate duration of lunch
+     * @return lunch duration in minutes
+     */
+    public double calculateLunch(){
+        return (double)Math.abs(Duration.between(lunchStart, lunchEnd).toMinutes());
+    }
 
 
 

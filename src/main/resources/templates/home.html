@@ -19,7 +19,7 @@
 
 <!--  TODO: redirect to clock in page -->
     <div th:if="${isLoggedIn == true}">
-        <p>Get started by clocking in.(Coming Soon)</p>
+        <p>Get started by <a th:href="@{'/recordHour'}">clocking in</a>.</p>
     </div>
 
 </body>
