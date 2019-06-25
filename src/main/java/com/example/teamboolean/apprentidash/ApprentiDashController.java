@@ -1,6 +1,8 @@
 package com.example.teamboolean.apprentidash;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,7 +12,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
+import javax.validation.constraints.Null;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -32,6 +37,8 @@ public class ApprentiDashController {
 
     @Autowired
     DayRepository dayRepository;
+
+    Day currentDay = new Day();
 
     @GetMapping("/")
     public String getHome(Model m, Principal p){
@@ -60,55 +67,53 @@ public class ApprentiDashController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return "redirect:/";
     }
-
-
+    
     //****** The controller methods to handle our Punch In page ******/
     @GetMapping("/recordHour")
-    public String recordHour(Model m, Principal p){
-        loggedInStatusHelper(m, p);
+    public String recordHour(Model m){
+        m.addAttribute("workStatus", buttonRenderHelper());
+
         return "recordHour";
     }
 
-    @PostMapping(value="/recordHour", params="clockIn=clockInValue")
-    public ModelAndView clockInSave() {
-        ModelAndView modelAndView = new ModelAndView();
-
+//Route to handle our clock in button
+    @PostMapping(value="/recordHour", params="name=value")
+    public String clockInSave(Principal p, Model m) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
-        System.out.println(dtf.format(now));
-        
-        return modelAndView;
+        boolean endOfDay = false;
+
+        if(buttonRenderHelper().equals("clockIn")) {
+            currentDay.setClockIn(now);
+        }else if(buttonRenderHelper().equals(("lunchIn"))) {
+            currentDay.setLunchStart(now);
+        }else if(buttonRenderHelper().equals("lunchOut")) {
+            currentDay.setLunchEnd(now);
+        }else if(buttonRenderHelper().equals("clockOut")){
+            currentDay.setClockOut(now);
+            endOfDay = true;
+        }
+        currentDay.setUser(userRepository.findByUsername(p.getName()));
+        dayRepository.save(currentDay);
+        if(endOfDay){
+            currentDay = new Day();
+        }
+        m.addAttribute("workStatus", buttonRenderHelper());
+        return "redirect:/recordHour";
     }
 
-    @PostMapping(value="/recordHour", params="lunchIn=lunchInValue")
-    public ModelAndView lunchInSave() {
-        ModelAndView modelAndView = new ModelAndView();
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-        System.out.println(dtf.format(now));
-        return modelAndView;
+    public String buttonRenderHelper(){
+        if(currentDay.getClockIn() == null)
+            return "clockIn";
+        else if(currentDay.getLunchStart() == null)
+            return "lunchIn";
+        else if(currentDay.getLunchEnd() == null)
+            return "lunchOut";
+        else if(currentDay.getClockOut() == null)
+            return "clockOut";
+        return null;
     }
-
-    @PostMapping(value="/recordHour", params="lunchOut=lunchOutValue")
-    public ModelAndView lunchOutSave() {
-        ModelAndView modelAndView = new ModelAndView();
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-        System.out.println(dtf.format(now));
-        return modelAndView;
-    }
-
-    @PostMapping(value="/recordHour", params="clockOut=clockOutValue")
-    public ModelAndView clockOutSave() {
-        ModelAndView modelAndView = new ModelAndView();
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-        System.out.println(dtf.format(now));
-        return modelAndView;
-    }
-
-
-
+//**************** End of the controller for handle Punch In page *************************//
 
     @GetMapping("/summary")
     public String getSummary(Principal p, Model m){

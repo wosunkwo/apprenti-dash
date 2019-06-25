@@ -3,29 +3,35 @@ package com.example.teamboolean.apprentidash;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Entity
 public class Day {
+
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
     @DateTimeFormat(pattern="yyyy-mm-dd HH:mm:ss")
-    Date clockIn;
+    LocalDateTime clockIn;
     @DateTimeFormat(pattern="yyyy-mm-dd HH:mm:ss")
-    Date clockOut;
+    LocalDateTime clockOut;
     @DateTimeFormat(pattern="yyyy-mm-dd HH:mm:ss")
-    Date lunchStart;
+    LocalDateTime lunchStart;
     @DateTimeFormat(pattern="yyyy-mm-dd HH:mm:ss")
-    Date lunchEnd;
+    LocalDateTime lunchEnd;
 
     @ManyToOne
     AppUser user;
 
     public Day(){}
 
-    public Day(Date clockIn, Date clockOut, Date lunchStart, Date lunchEnd, AppUser user) {
+    public Day(LocalDateTime clockIn, LocalDateTime clockOut, LocalDateTime lunchStart, LocalDateTime lunchEnd, AppUser user) {
         this.clockIn = clockIn;
         this.clockOut = clockOut;
         this.lunchStart = lunchStart;
@@ -49,39 +55,56 @@ public class Day {
         this.user = user;
     }
 
-    public Date getClockIn() {
+    public LocalDateTime getClockIn() {
         return clockIn;
     }
 
-    public void setClockIn(Date clockIn) {
+    public void setClockIn(LocalDateTime clockIn) {
         this.clockIn = clockIn;
     }
 
-    public Date getClockOut() {
+    public LocalDateTime getClockOut() {
         return clockOut;
     }
 
-    public void setClockOut(Date clockOut) {
+    public void setClockOut(LocalDateTime clockOut) {
         this.clockOut = clockOut;
     }
 
-    public Date getLunchStart() {
+    public LocalDateTime getLunchStart() {
         return lunchStart;
     }
 
-    public void setLunchStart(Date lunchStart) {
+    public void setLunchStart(LocalDateTime lunchStart) {
         this.lunchStart = lunchStart;
     }
 
-    public Date getLunchEnd() {
+    public LocalDateTime getLunchEnd() {
         return lunchEnd;
     }
 
-    public void setLunchEnd(Date lunchEnd) {
+    public void setLunchEnd(LocalDateTime lunchEnd) {
         this.lunchEnd = lunchEnd;
     }
 
-    // TODO: methods to calculate
+    /**
+     * Method to calculate daily working hours
+     * @return number of hours worked/day
+     */
+    public double calculateDailyHours(){
+        long dailyWork = Math.abs(Duration.between(clockIn, clockOut).toMinutes());
+        long lunch = (long)calculateLunch();
+
+        return (double)(dailyWork - lunch)/ 60;
+    }
+
+    /**
+     * Method to calculate duration of lunch
+     * @return lunch duration in minutes
+     */
+    public double calculateLunch(){
+        return (double)Math.abs(Duration.between(lunchStart, lunchEnd).toMinutes());
+    }
 
 
 
