@@ -93,9 +93,9 @@ public class Day {
      */
     public double calculateDailyHours(){
         long dailyWork = Math.abs(Duration.between(clockIn, clockOut).toMinutes());
-        long lunch = (long)calculateLunch();
+        long lunch = Math.abs(Duration.between(lunchStart, lunchEnd).toMinutes());
 
-        return (double)(dailyWork - lunch)/ 60;
+        return (double) (dailyWork - lunch)/ 60;
     }
 
     /**
@@ -103,7 +103,8 @@ public class Day {
      * @return lunch duration in minutes
      */
     public double calculateLunch(){
-        return (double)Math.abs(Duration.between(lunchStart, lunchEnd).toMinutes());
+
+        return (double)Math.abs(Duration.between(lunchStart, lunchEnd).toMinutes())/ 60;
     }
 
 
