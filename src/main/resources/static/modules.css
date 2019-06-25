@@ -17,11 +17,19 @@
 }
 
 .logout_in {
-  padding-right: 50px;
+  margin-right: 50px;
+  padding: 5px;
+  color: black;
   text-decoration: underline;
-  color: inherit;
-  background-color: #333333;
-  border-radius: 25px;
+  background-color: #fafafa;
+  border-radius: 2px;
+}
+
+.logout_in:hover {
+  color: #fafafa;
+  background-color: #323232;
+  box-shadow: 25px;
+  border-radius: 5px;
 }
 
 .navbar ul {
@@ -35,13 +43,14 @@
   color: black;
   padding: 10px;
   margin: 5px;
-  background-color: #bfb9b9;
+  background-color: #fafafa;
   border-radius: 2px;
 }
 
 .navbar li:hover {
-  color: black;
-  background-color: #fafafa;
+  color: #fafafa;
+  background-color: #323232;
+  box-shadow: 25px;
   border-radius: 5px;
 }
 
