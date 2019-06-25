@@ -77,8 +77,7 @@ public class ApprentiDashController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return "redirect:/";
     }
-
-
+    
     //****** The controller methods to handle our Punch In page ******/
     @GetMapping("/recordHour")
     public String recordHour(Model m){
@@ -86,16 +85,13 @@ public class ApprentiDashController {
         return "recordHour";
     }
 
-
 //Route to handle our clock in button
     @PostMapping(value="/recordHour", params="name=value")
     public String clockInSave(Principal p, Model m) {
-
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
-        System.out.println(dtf.format(now));
-        System.out.println(buttonRenderHelper());
         boolean endOfDay = false;
+
         if(buttonRenderHelper().equals("clockIn")) {
             currentDay.setClockIn(now);
         }else if(buttonRenderHelper().equals(("lunchIn"))) {
@@ -103,7 +99,6 @@ public class ApprentiDashController {
         }else if(buttonRenderHelper().equals("lunchOut")) {
             currentDay.setLunchEnd(now);
         }else if(buttonRenderHelper().equals("clockOut")){
-            System.out.println("I got in here");
             currentDay.setClockOut(now);
             endOfDay = true;
         }
@@ -112,7 +107,6 @@ public class ApprentiDashController {
         if(endOfDay){
             currentDay = new Day();
         }
-
         m.addAttribute("workStatus", buttonRenderHelper());
         return "redirect:/recordHour";
     }
@@ -128,9 +122,7 @@ public class ApprentiDashController {
             return "clockOut";
         return null;
     }
-
 //**************** End of the controller for handle Punch In page *************************//
-
 
     @GetMapping("/summary")
     public String getSummary(Principal p, Model m){
