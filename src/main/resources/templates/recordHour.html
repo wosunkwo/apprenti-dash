@@ -11,32 +11,21 @@
         <div th:replace="fragments/navbar :: navbar(${userFirstName}, ${isLoggedIn})"></div>
     </header>
 
-<!--<form  th:if="${!sessionStatus && !followerStatus} " action="/individualUser" method="GET" >-->
-<!--    <button style=" margin-bottom: 15px; background-color: #4CAF50; color: white;" name="username" type="submit" th:value="${currentUser.username}">Follow</button>-->
-<!--</form>-->
-
 <h2>TIME PERIOD</h2>
 <form action="/recordHour" method="POST">
   
-    <h2>TIME PERIOD</h2>
-    <form action="/recordHour" method="POST">
+    <button th:if="${workStatus == 'clockIn'}" type="submit" name="name"
+            value="value">Clock In</button>
 
+    <button th:if="${workStatus == 'lunchIn'}" type="submit" name="name"
+            value="value">Lunch In</button>
 
-        <button type="submit" name="clockIn"
-                value="clockInValue">Clock In</button>
+    <button th:if="${workStatus == 'lunchOut'}" type="submit" name="name"
+            value="value">Lunch Out</button>
 
-        <button type="submit" name="lunchIn"
-                value="lunchInValue">Lunch In</button>
-
-        <button type="submit" name="lunchOut"
-                value="lunchOutValue">Lunch Out</button>
-
-        <button type="submit" name="clockOut"
-                value="clockOutValue">Clock Out</button>
-    </form>
-
-
-
+    <button th:if="${workStatus == 'clockOut'}" type="submit" name="name"
+            value="value">Clock Out</button>
+</form>
 
 
 
