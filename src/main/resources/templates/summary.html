@@ -50,10 +50,13 @@
         <td th:text="${#temporals.format(day.clockOut, 'HH:mm')}"></td>
         <td th:text="${#numbers.formatDecimal(day.calculateLunch(), 1, 2)}"></td>
         <td th:text="${#numbers.formatDecimal(day.calculateDailyHours(), 1, 2)}"></td>
+        <td><a th:href="'/edit/' + ${day.getId()}"><span>Edit</span></a></td>
     </tr>
 
     </tbody>
 </table>
+<p>Total Hours: <span th:text="${#numbers.formatDecimal(totalHours, 1, 2)}"></span></p>
+
 
 </body>
 </html>

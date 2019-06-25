@@ -129,15 +129,18 @@ public class ApprentiDashController {
         // retrieve by date from the DB.
         List<Day> userDays = currentUser.days;
         List<Day> dateRange = new ArrayList<>();
+        // TODO: initialize based from the current's date' week
         LocalDate from = LocalDate.now();
         LocalDate to = LocalDate.now();
+
+
         if (fromDate != null && toDate != null){
 
             from = LocalDate.parse(fromDate);
             to = LocalDate.parse(toDate);
         }
 
-
+        double totalHours = 0.0;
         // retrieves the days associated to the logged in user
         for (Day curDay: userDays){
             LocalDate local = curDay.clockIn.toLocalDate();
@@ -145,9 +148,11 @@ public class ApprentiDashController {
             if (local.compareTo(from) >= 0 && local.compareTo(to)<= 0){
                 System.out.println(local);
                 dateRange.add(curDay);
+                totalHours += curDay.calculateDailyHours();
             }
         }
         m.addAttribute("days", dateRange);
+        m.addAttribute("totalHours", totalHours);
         return "summary";
     }
 
