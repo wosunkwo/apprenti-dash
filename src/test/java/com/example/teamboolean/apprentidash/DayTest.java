@@ -39,4 +39,6 @@ public class DayTest {
 
         assertEquals("Duration should be the same", 8.5, test.calculateDailyHours(), 0.01 );
     }
+
+
 }
