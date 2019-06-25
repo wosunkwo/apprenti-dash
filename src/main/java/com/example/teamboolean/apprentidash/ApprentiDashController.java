@@ -23,6 +23,13 @@ import java.security.Principal;
 
 import java.time.format.FormatStyle;
 import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+
 
 @Controller
 public class ApprentiDashController {
@@ -119,11 +126,39 @@ public class ApprentiDashController {
 //**************** End of the controller for handle Punch In page *************************//
 
     @GetMapping("/summary")
-    public String getSummary(Principal p, Model m){
+    public String getSummary(Principal p, Model m, String fromDate, String toDate){
         loggedInStatusHelper(m, p);
         AppUser currentUser = userRepository.findByUsername(p.getName());
         m.addAttribute("localDate", LocalDate.now());
         m.addAttribute("user", currentUser);
+
+        // retrieve by date from the DB.
+        List<Day> userDays = currentUser.days;
+        List<Day> dateRange = new ArrayList<>();
+        // TODO: initialize based from the current's date' week
+        LocalDate from = LocalDate.now();
+        LocalDate to = LocalDate.now();
+
+
+        if (fromDate != null && toDate != null){
+
+            from = LocalDate.parse(fromDate);
+            to = LocalDate.parse(toDate);
+        }
+
+        double totalHours = 0.0;
+        // retrieves the days associated to the logged in user
+        for (Day curDay: userDays){
+            LocalDate local = curDay.clockIn.toLocalDate();
+
+            if (local.compareTo(from) >= 0 && local.compareTo(to)<= 0){
+                System.out.println(local);
+                dateRange.add(curDay);
+                totalHours += curDay.calculateDailyHours();
+            }
+        }
+        m.addAttribute("days", dateRange);
+        m.addAttribute("totalHours", totalHours);
         return "summary";
     }
 
