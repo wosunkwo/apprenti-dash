@@ -12,7 +12,7 @@
     <header>
         <div th:replace="fragments/navbar :: navbar(${userFirstName}, ${isLoggedIn}, ${currentPage})"></div>
     </header>
-    <div class="main_content">
+    <div class="main_content, edit_content">
         <form class="editForm" action="/edit" method="POST">
         <table class = "editTable">
             <h3>Edit your hours</h3>
@@ -43,9 +43,9 @@
             </tr>
 
         </table>
-            <div> <input type="submit" value="Change"> </div>
+            <input class="update_hours_button" type="submit" value="Update Hours">
         </form>
-        <div><button><a th:href="'/delete/'+ ${currentDay.getId()}"><span>Delete</span></a></button></div>
+        <button class="delete_button"><a th:href="'/delete/'+ ${currentDay.getId()}">Delete Entire Day</a></button>
     </div>
 </body>
 </html>

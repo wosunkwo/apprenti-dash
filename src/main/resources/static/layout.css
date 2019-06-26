@@ -11,6 +11,7 @@ p {
 .main_content {
   display: flex;
   flex-direction: column;
+  
 }
 
 h1 {
