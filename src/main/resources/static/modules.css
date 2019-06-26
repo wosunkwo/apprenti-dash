@@ -6,6 +6,7 @@
   font-size: 20px;
   color: #fafafa;
   padding: 20px;
+  margin-bottom: 60px;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -63,7 +64,7 @@
 
 /* Home Page */
 .home_title {
-  padding: 60px;
+  padding-bottom: 60px;
 }
 
 .home_cta {
@@ -74,4 +75,36 @@
 
 .sign_up {
   margin: 20px;
+}
+
+
+/* Clock In Page */
+
+.clock_in_form div{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 30px;
+}
+
+.clock_in_form button {
+  font-weight: bold;
+  font-size: 20px;
+  background-color: #9ddeec;
+  margin: 36px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 36px;
+  padding-right: 36px;
+  box-shadow: 2px 4px 4px darkgray;
+  border-radius: 15px;
+}
+
+.clock_in_form button:hover {
+  box-shadow: none;
+}
+
+.clock_status {
+  font-weight: bold;
 }
