@@ -24,6 +24,8 @@ import java.time.format.DateTimeFormatter;
 import java.security.Principal;
 
 import java.time.format.FormatStyle;
+import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.WeekFields;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,6 +39,12 @@ import static java.time.LocalDate.now;
 
 @Controller
 public class ApprentiDashController {
+
+    private final static ZoneId USZONE = ZoneId.of("America/Los_Angeles");
+
+    private DayOfWeek firstDay;
+
+    private List<Day> dateRange;
 
     @Autowired
     UserRepository userRepository;
@@ -158,20 +166,21 @@ public class ApprentiDashController {
         m.addAttribute("currentPage", "summary");
 
         AppUser currentUser = userRepository.findByUsername(p.getName());
-        m.addAttribute("localDate", now());
+
         m.addAttribute("user", currentUser);
 
         // retrieve by date from the DB.
         List<Day> userDays = currentUser.days;
-        List<Day> dateRange = new ArrayList<>();
-        // TODO: initialize based from the current's date' week
-        LocalDate from = LocalDate.now();
-        LocalDate to = LocalDate.now();
+        dateRange = new ArrayList<>();
 
+        LocalDate from = getFirstDay();
+        LocalDate to = getLastDay();
 
-        if (fromDate != null && toDate != null){
-
+        if (fromDate != null){
             from = LocalDate.parse(fromDate);
+        }
+
+        if (toDate != null){
             to = LocalDate.parse(toDate);
         }
 
@@ -181,11 +190,16 @@ public class ApprentiDashController {
             LocalDate local = curDay.clockIn.toLocalDate();
 
             if (local.compareTo(from) >= 0 && local.compareTo(to)<= 0){
-                System.out.println(local);
                 dateRange.add(curDay);
                 totalHours += curDay.calculateDailyHours();
             }
         }
+
+        System.out.println(to);
+        m.addAttribute("fromDate", from);
+        m.addAttribute("toDate", to);
+
+        sortDateList();
         m.addAttribute("days", dateRange);
         m.addAttribute("totalHours", totalHours);
         return "summary";
@@ -263,6 +277,33 @@ public class ApprentiDashController {
         }else{
             return false;
         }
+    }
+
+    //Helper function to get the first day
+    //Reference: https://stackoverflow.com/questions/22890644/get-current-week-start-and-end-date-in-java-monday-to-sunday
+    private LocalDate getFirstDay(){
+        firstDay = WeekFields.of(Locale.US).getFirstDayOfWeek();
+        return LocalDate.now(USZONE).with(TemporalAdjusters.previousOrSame(firstDay));
+    }
+
+    //Helper function to get the last day
+    //Reference: https://stackoverflow.com/questions/22890644/get-current-week-start-and-end-date-in-java-monday-to-sunday
+    private LocalDate getLastDay(){
+        DayOfWeek lastDay = DayOfWeek.of(((firstDay.getValue() + 5) % DayOfWeek.values().length) + 1);
+        return LocalDate.now(USZONE).with(TemporalAdjusters.nextOrSame(lastDay));
+
+    }
+
+    //Sort dates from earliest to latest
+    //Ref: http://java-buddy.blogspot.com/2013/01/sort-list-of-date.html
+    private void sortDateList(){
+        Collections.sort(dateRange, new Comparator<Day>(){
+
+            @Override
+            public int compare(Day o1, Day o2) {
+                return o1.clockIn.compareTo(o2.clockIn);
+            }
+        });
     }
 
 }
