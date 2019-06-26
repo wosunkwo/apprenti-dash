@@ -166,7 +166,7 @@ public class ApprentiDashController {
         m.addAttribute("currentPage", "summary");
 
         AppUser currentUser = userRepository.findByUsername(p.getName());
-        m.addAttribute("localDate", now());
+
         m.addAttribute("user", currentUser);
 
         // retrieve by date from the DB.
@@ -183,7 +183,7 @@ public class ApprentiDashController {
         if (toDate != null){
             to = LocalDate.parse(toDate);
         }
-        
+
         double totalHours = 0.0;
         // retrieves the days associated to the logged in user
         for (Day curDay: userDays){
@@ -194,6 +194,10 @@ public class ApprentiDashController {
                 totalHours += curDay.calculateDailyHours();
             }
         }
+
+        System.out.println(to);
+        m.addAttribute("fromDate", from);
+        m.addAttribute("toDate", to);
 
         sortDateList();
         m.addAttribute("days", dateRange);
@@ -277,20 +281,22 @@ public class ApprentiDashController {
 
     //Helper function to get the first day
     //Reference: https://stackoverflow.com/questions/22890644/get-current-week-start-and-end-date-in-java-monday-to-sunday
-    public LocalDate getFirstDay(){
+    private LocalDate getFirstDay(){
         firstDay = WeekFields.of(Locale.US).getFirstDayOfWeek();
         return LocalDate.now(USZONE).with(TemporalAdjusters.previousOrSame(firstDay));
     }
 
-    //Helper function to get the first day
+    //Helper function to get the last day
     //Reference: https://stackoverflow.com/questions/22890644/get-current-week-start-and-end-date-in-java-monday-to-sunday
-    public LocalDate getLastDay(){
+    private LocalDate getLastDay(){
         DayOfWeek lastDay = DayOfWeek.of(((firstDay.getValue() + 5) % DayOfWeek.values().length) + 1);
         return LocalDate.now(USZONE).with(TemporalAdjusters.nextOrSame(lastDay));
 
     }
 
-    public void sortDateList(){
+    //Sort dates from earliest to latest
+    //Ref: http://java-buddy.blogspot.com/2013/01/sort-list-of-date.html
+    private void sortDateList(){
         Collections.sort(dateRange, new Comparator<Day>(){
 
             @Override

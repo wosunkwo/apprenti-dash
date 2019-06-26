@@ -26,9 +26,9 @@
 <div>
     <form action="/summary">
         From Date:
-        <input type="date" name="fromDate">
+        <input type="date" name="fromDate" th:value="${#temporals.format(fromDate, 'yyyy-MM-dd')}">
         To Date:
-        <input type="date" name="toDate">
+        <input type="date" name="toDate" th:value="${#temporals.format(toDate, 'yyyy-MM-dd')}">
         <input type="submit">
     </form>
 </div>
