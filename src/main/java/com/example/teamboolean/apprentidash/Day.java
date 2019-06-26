@@ -1,5 +1,7 @@
 package com.example.teamboolean.apprentidash;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -92,11 +94,16 @@ public class Day {
      * @return number of hours worked/day
      */
     public double calculateDailyHours(){
-        long dailyWork = Math.abs(Duration.between(clockIn, clockOut).toMinutes());
-        long lunch = Math.abs(Duration.between(lunchStart, lunchEnd).toMinutes());
+        double result = 0.0;
+        if(clockIn != null && clockOut!= null && lunchStart != null && lunchEnd != null) {
+            long dailyWork = Math.abs(Duration.between(clockIn, clockOut).toMinutes());
+            long lunch = Math.abs(Duration.between(lunchStart, lunchEnd).toMinutes());
+            result = (double) (dailyWork - lunch) / 60;
+        }
 
-        return (double) (dailyWork - lunch)/ 60;
+        return result;
     }
+
 
     /**
      * Method to calculate duration of lunch
@@ -104,7 +111,13 @@ public class Day {
      */
     public double calculateLunch(){
 
-        return (double)Math.abs(Duration.between(lunchStart, lunchEnd).toMinutes())/ 60;
+        double result = 0.0;
+        if(lunchStart != null && lunchEnd != null) {
+            result = (double)Math.abs(Duration.between(lunchStart, lunchEnd).toMinutes())/ 60;
+        }
+
+        return result;
+        
     }
 
 

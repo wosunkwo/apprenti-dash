@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Timesheet Summary</title>
+    <link rel="stylesheet" type="text/css" href="reset.css">
+    <link rel="stylesheet" type="text/css" href="base.css">
+    <link rel="stylesheet" type="text/css" href="layout.css">
+    <link rel="stylesheet" type="text/css" href="modules.css">
 </head>
 <body>
 <header>
-    <div th:replace="fragments/navbar :: navbar(${userFirstName}, ${isLoggedIn})"></div>
+    <div th:replace="fragments/navbar :: navbar(${userFirstName}, ${isLoggedIn}, ${currentPage})"></div>
 </header>
 <h2>Summary</h2>
 <div>
@@ -21,9 +25,10 @@
 </div>
 <div>
     <form action="/summary">
-        Date:<br>
-        <input type="date" name="fromDate">
-        <input type="date" name="toDate">
+        From Date:
+        <input type="date" name="fromDate" th:value="${#temporals.format(fromDate, 'yyyy-MM-dd')}">
+        To Date:
+        <input type="date" name="toDate" th:value="${#temporals.format(toDate, 'yyyy-MM-dd')}">
         <input type="submit">
     </form>
 </div>

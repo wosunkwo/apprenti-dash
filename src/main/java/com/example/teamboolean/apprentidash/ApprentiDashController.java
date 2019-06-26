@@ -3,6 +3,7 @@ package com.example.teamboolean.apprentidash;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.orm.hibernate5.HibernateOperations;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,10 +11,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.persistence.EntityManager;
 import javax.validation.constraints.Null;
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -22,6 +26,8 @@ import java.time.format.DateTimeFormatter;
 import java.security.Principal;
 
 import java.time.format.FormatStyle;
+import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.WeekFields;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,6 +42,12 @@ import static java.time.LocalDate.now;
 @Controller
 public class ApprentiDashController {
 
+    private final static ZoneId USZONE = ZoneId.of("America/Los_Angeles");
+
+    private DayOfWeek firstDay;
+
+    private List<Day> dateRange;
+
     @Autowired
     UserRepository userRepository;
 
@@ -48,21 +60,39 @@ public class ApprentiDashController {
     Day currentDay = new Day();
 
     @GetMapping("/")
+    public RedirectView getRoot(Model m, Principal p){
+
+        // If the user is logged in, redirect them to clock-in
+        // otherwise, direct them to home page
+        // Huge thanks to David for the idea!
+        if(p != null){
+            return new RedirectView("/recordHour");
+        } else {
+            return new RedirectView("/home");
+        }
+    }
+
+    @GetMapping("/home")
     public String getHome(Model m, Principal p){
         //Sets the necessary variables for the nav bar
         loggedInStatusHelper(m, p);
+        m.addAttribute("currentPage", "home");
         return "home";
     }
 
     @GetMapping("/login")
     public String getLogin(Model m, Principal p){
+        //Sets the necessary variables for the nav bar
         loggedInStatusHelper(m, p);
+        m.addAttribute("currentPage", "login");
         return "login";
     }
 
     @GetMapping("/signup")
     public String startSignUp(Model m, Principal p){
+        //Sets the necessary variables for the nav bar
         loggedInStatusHelper(m, p);
+        m.addAttribute("currentPage", "signup");
         return "signup";
     }
 
@@ -81,7 +111,11 @@ public class ApprentiDashController {
 
     /********************************* The controller methods to handle our Punch In page **************************************************************/
     @GetMapping("/recordHour")
-    public String recordHour(Model m){
+    public String recordHour(Model m, Principal p){
+        //Sets the necessary variables for the nav bar
+        loggedInStatusHelper(m, p);
+        m.addAttribute("currentPage", "clock_in");
+        //Sets status for knowing which button to show
         String todayDate =  java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneOffset.UTC));
         m.addAttribute("workStatus", buttonRenderHelper());
         m.addAttribute("todayDate", todayDate);
@@ -129,22 +163,26 @@ public class ApprentiDashController {
 
     @GetMapping("/summary")
     public String getSummary(Principal p, Model m, String fromDate, String toDate){
+        //Sets the necessary variables for the nav bar
         loggedInStatusHelper(m, p);
+        m.addAttribute("currentPage", "summary");
+
         AppUser currentUser = userRepository.findByUsername(p.getName());
-        m.addAttribute("localDate", now());
+
         m.addAttribute("user", currentUser);
 
         // retrieve by date from the DB.
         List<Day> userDays = currentUser.days;
-        List<Day> dateRange = new ArrayList<>();
-        // TODO: initialize based from the current's date' week
-        LocalDate from = LocalDate.now();
-        LocalDate to = LocalDate.now();
+        dateRange = new ArrayList<>();
 
+        LocalDate from = getFirstDay();
+        LocalDate to = getLastDay();
 
-        if (fromDate != null && toDate != null){
-
+        if (fromDate != null){
             from = LocalDate.parse(fromDate);
+        }
+
+        if (toDate != null){
             to = LocalDate.parse(toDate);
         }
 
@@ -154,11 +192,16 @@ public class ApprentiDashController {
             LocalDate local = curDay.clockIn.toLocalDate();
 
             if (local.compareTo(from) >= 0 && local.compareTo(to)<= 0){
-                System.out.println(local);
                 dateRange.add(curDay);
                 totalHours += curDay.calculateDailyHours();
             }
         }
+
+        System.out.println(to);
+        m.addAttribute("fromDate", from);
+        m.addAttribute("toDate", to);
+
+        sortDateList();
         m.addAttribute("days", dateRange);
         m.addAttribute("totalHours", totalHours);
         return "summary";
@@ -167,19 +210,49 @@ public class ApprentiDashController {
 
 
     /************************************ Controller to handle the Edit page ***************************************************************************/
-    @GetMapping("/edit")
-    public String getEdit(Model m){
-        LocalDate date = LocalDate.now();
-        LocalDateTime startTime = LocalDateTime.of(date, LocalTime.MIDNIGHT);
-        ArrayList<LocalTime> timeInterval = new ArrayList<>();
-        do {
-            timeInterval.add(startTime.toLocalTime());
-            startTime = startTime.plus(Duration.ofHours(0).plusMinutes(15));
-        } while (date.equals(startTime.toLocalDate()));
-        m.addAttribute("timeInterval", timeInterval);
-
-        return "edit";
+    @GetMapping("/edit/{dayId}")
+    public String getEdit(@PathVariable long dayId, Model m, Principal p) {
+        Day currentDay = dayRepository.findById(dayId).get();
+        AppUser currentUser = userRepository.findByUsername(p.getName());
+        if(!currentUser.days.contains(currentDay))
+            return "error";
+        else{
+            m.addAttribute("currentDay", currentDay);
+            return "edit";
+        }
     }
+
+    @PostMapping("/edit")
+    public String postEdit(long dayId,String clockIn, String clockOut, String lunchStart, String lunchEnd){
+        Day currentDay = dayRepository.findById(dayId).get();
+        LocalTime clockInLocalTime = LocalTime.parse(clockIn);
+        LocalTime clockOutLocalTime = LocalTime.parse(clockOut);
+        LocalTime lunchStartLocalTime = LocalTime.parse(lunchStart);
+        LocalTime lunchEndLocalTime = LocalTime.parse(lunchEnd);
+
+        currentDay.setClockIn(currentDay.getClockIn().withHour(clockInLocalTime.getHour()).withMinute(clockInLocalTime.getMinute()));
+        currentDay.setClockOut(currentDay.getClockOut().withHour(clockOutLocalTime.getHour()).withMinute(clockOutLocalTime.getMinute()));
+        currentDay.setLunchStart(currentDay.getLunchStart().withHour(lunchStartLocalTime.getHour()).withMinute(lunchStartLocalTime.getMinute()));
+        currentDay.setLunchEnd(currentDay.getLunchEnd().withHour(lunchEndLocalTime.getHour()).withMinute(lunchEndLocalTime.getMinute()));
+
+        dayRepository.save(currentDay);
+
+        return "redirect:/summary";
+    }
+
+    @GetMapping("/delete/{dayId}")
+    public String deleteDay(@PathVariable long dayId, Principal p){
+        Day currentDay = dayRepository.findById(dayId).get();
+        AppUser currentUser = userRepository.findByUsername(p.getName());
+        if(!currentUser.days.contains(currentDay))
+            return "error";
+        else{
+            dayRepository.delete(currentDay);
+            return "redirect:/summary";
+        }
+
+    }
+
 
 
     /************************************ End of Controller to handle the Edit page ***************************************************************************/
@@ -220,6 +293,33 @@ public class ApprentiDashController {
         }else{
             return false;
         }
+    }
+
+    //Helper function to get the first day
+    //Reference: https://stackoverflow.com/questions/22890644/get-current-week-start-and-end-date-in-java-monday-to-sunday
+    private LocalDate getFirstDay(){
+        firstDay = WeekFields.of(Locale.US).getFirstDayOfWeek();
+        return LocalDate.now(USZONE).with(TemporalAdjusters.previousOrSame(firstDay));
+    }
+
+    //Helper function to get the last day
+    //Reference: https://stackoverflow.com/questions/22890644/get-current-week-start-and-end-date-in-java-monday-to-sunday
+    private LocalDate getLastDay(){
+        DayOfWeek lastDay = DayOfWeek.of(((firstDay.getValue() + 5) % DayOfWeek.values().length) + 1);
+        return LocalDate.now(USZONE).with(TemporalAdjusters.nextOrSame(lastDay));
+
+    }
+
+    //Sort dates from earliest to latest
+    //Ref: http://java-buddy.blogspot.com/2013/01/sort-list-of-date.html
+    private void sortDateList(){
+        Collections.sort(dateRange, new Comparator<Day>(){
+
+            @Override
+            public int compare(Day o1, Day o2) {
+                return o1.clockIn.compareTo(o2.clockIn);
+            }
+        });
     }
 
 }
