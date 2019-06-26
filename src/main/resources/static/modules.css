@@ -166,6 +166,19 @@ thead {
   align-items: center
 }
 
+.editTable {
+  margin: 50px;
+  text-align: center;
+}
+
+.editTable td {
+  padding: 5px;
+}
+
+.editTable th {
+  background-color: #dfdfdf;
+}
+
 .update_hours_button {
   padding: 10px;
   padding-right: 10px;
