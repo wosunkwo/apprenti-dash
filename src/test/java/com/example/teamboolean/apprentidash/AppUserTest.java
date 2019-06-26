@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 
 public class AppUserTest {
 
+
     // This is testing the empty constructor
     @Test
     public void appUserNull(){
@@ -16,6 +17,7 @@ public class AppUserTest {
         assertNull("this should be null", test.lastName);
         assertNull("this should be null", test.managerName);
     }
+
 
     // This is testing the constructor when creating a new user
     @Test
@@ -37,6 +39,7 @@ public class AppUserTest {
         assertEquals("should return instance of a manager name", "ManagerName", test.getManagerName());
 
     }
+
 
     // This is testing the constructor with a missing manager field.
     // Manager is the only non-required field upon submit with Thyme leaf
