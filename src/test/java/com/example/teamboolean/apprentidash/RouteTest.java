@@ -36,7 +36,7 @@ public class RouteTest {
 
     @Test
     public void test_root() throws Exception {
-        this.mockMvc.perform(get("/")).andExpect(status().isOk());
+        this.mockMvc.perform(get("/")).andExpect(status().is3xxRedirection());
     }
 
     @Test
