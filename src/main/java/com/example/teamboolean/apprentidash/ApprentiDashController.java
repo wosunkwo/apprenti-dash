@@ -3,6 +3,7 @@ package com.example.teamboolean.apprentidash;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.orm.hibernate5.HibernateOperations;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.persistence.EntityManager;
 import javax.validation.constraints.Null;
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -237,6 +239,20 @@ public class ApprentiDashController {
 
         return "redirect:/summary";
     }
+
+    @GetMapping("/delete/{dayId}")
+    public String deleteDay(@PathVariable long dayId, Principal p){
+        Day currentDay = dayRepository.findById(dayId).get();
+        AppUser currentUser = userRepository.findByUsername(p.getName());
+        if(!currentUser.days.contains(currentDay))
+            return "error";
+        else{
+            dayRepository.delete(currentDay);
+            return "redirect:/summary";
+        }
+
+    }
+
 
 
     /************************************ End of Controller to handle the Edit page ***************************************************************************/
