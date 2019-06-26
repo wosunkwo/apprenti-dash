@@ -11,6 +11,7 @@ p {
 .main_content {
   display: flex;
   flex-direction: column;
+  
 }
 
 h1 {
@@ -28,11 +29,20 @@ h3 {
   text-align: center;
 }
 
+h4 {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 10px;
+}
+
 form {
   display: flex;
   justify-content: center;
+  align-items: baseline;
 }
 
 form * {
   margin: 5px;
 }
+
+

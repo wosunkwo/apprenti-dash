@@ -10,6 +10,7 @@ import static org.junit.Assert.*;
 
 public class DayTest {
 
+    // test for the calculation of the total hours
     @Test
     public void calculateDailyHours() {
         LocalDateTime startHour = LocalDate.now().atTime(9, 0);
@@ -25,6 +26,7 @@ public class DayTest {
         assertEquals("Duration should be the same", 8, test.calculateDailyHours(), 0.01 );
     }
 
+    // testing total hour calculation when the minutes is not equal to quarters of a hour.
     @Test
     public void calculateDailyHoursNotExactMinutes() {
         LocalDateTime startHour = LocalDate.now().atTime(9, 0);
@@ -40,6 +42,7 @@ public class DayTest {
         assertEquals("Duration should be the same", 8.5, test.calculateDailyHours(), 0.01 );
     }
 
+    // Testing empty Day constructor
     @Test
     public void testDayNull(){
         Day test = new Day();
@@ -49,6 +52,7 @@ public class DayTest {
         assertNull("this should be null", test.lunchEnd);
     }
 
+    // Testing instance of a new day
     @Test
     public void testDayParameters(){
 
@@ -67,6 +71,7 @@ public class DayTest {
         assertEquals("this should give back lunch start time", lunchStart, test.lunchStart);
     }
 
+    // Test for the lunch calculation method
     @Test
     public void testDayLunchCalc(){
 
@@ -82,6 +87,7 @@ public class DayTest {
         assertEquals("this should give back lunch start time", 1.0, test.calculateLunch(),0.01);
     }
 
+    // Testing the lunch calculation method when not a flat hour
     @Test
     public void testDayLunchCalcNotWholeNum(){
 

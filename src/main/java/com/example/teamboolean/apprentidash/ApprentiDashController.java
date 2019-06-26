@@ -224,6 +224,10 @@ public class ApprentiDashController {
     /************************************ Controller to handle the Edit page ***************************************************************************/
     @GetMapping("/edit/{dayId}")
     public String getEdit(@PathVariable long dayId, Model m, Principal p) {
+        //Sets the necessary variables for the nav bar
+        loggedInStatusHelper(m, p);
+        m.addAttribute("currentPage", "clock_in");
+
         Day currentDay = dayRepository.findById(dayId).get();
         AppUser currentUser = userRepository.findByUsername(p.getName());
         if(!currentUser.days.contains(currentDay))
