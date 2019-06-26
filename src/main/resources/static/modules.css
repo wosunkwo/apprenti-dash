@@ -133,7 +133,7 @@ thead {
   
 }
 
-tr:nth-child(even){
+.tableTimesheet tr:nth-child(even){
   background-color: #dfdfdf;
 }
 
@@ -151,4 +151,11 @@ tr:nth-child(even){
 .total_hours span {
   margin: 10px;
   margin-left: 20px;
+}
+
+/* Edit Styling */
+
+.editForm {
+  display: flex;
+  flex-direction: column;
 }
