@@ -35,17 +35,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static java.time.LocalDate.now;
-
-
 
 @Controller
 public class ApprentiDashController {
-
+    //US Zone ID
     private final static ZoneId USZONE = ZoneId.of("America/Los_Angeles");
-
+    //first Day of the week
     private DayOfWeek firstDay;
-
+    //Day list based from date range
     private List<Day> dateRange;
 
     @Autowired
@@ -57,6 +54,9 @@ public class ApprentiDashController {
     @Autowired
     DayRepository dayRepository;
 
+    Day currentDay = new Day();
+
+    //Root route
     @GetMapping("/")
     public RedirectView getRoot(Model m, Principal p){
 
@@ -70,6 +70,7 @@ public class ApprentiDashController {
         }
     }
 
+    //Home page
     @GetMapping("/home")
     public String getHome(Model m, Principal p){
         //Sets the necessary variables for the nav bar
@@ -78,6 +79,7 @@ public class ApprentiDashController {
         return "home";
     }
 
+    //Login Page
     @GetMapping("/login")
     public String getLogin(Model m, Principal p){
         //Sets the necessary variables for the nav bar
@@ -86,6 +88,7 @@ public class ApprentiDashController {
         return "login";
     }
 
+    //Sign-up page
     @GetMapping("/signup")
     public String startSignUp(Model m, Principal p){
         //Sets the necessary variables for the nav bar
@@ -170,23 +173,31 @@ public class ApprentiDashController {
 
 /******************************** End of the controller for handle Punch In page ********************************************************************/
 
+/******************************** Summary Route ******************************************************************************/
     @GetMapping("/summary")
     public String getSummary(Principal p, Model m, String fromDate, String toDate){
         //Sets the necessary variables for the nav bar
         loggedInStatusHelper(m, p);
         m.addAttribute("currentPage", "summary");
 
+        //Retrieve info of logged in user
         AppUser currentUser = userRepository.findByUsername(p.getName());
 
+        //Add to the model for display
         m.addAttribute("user", currentUser);
 
-        // retrieve by date from the DB.
+        //Get associated days of the user
         List<Day> userDays = currentUser.days;
+
+        //initialize list
         dateRange = new ArrayList<>();
 
+        //Get first day of the current week
         LocalDate from = getFirstDay();
+        //Get last day of current week
         LocalDate to = getLastDay();
 
+        //Check if input dates are not null, if not convert into local date
         if (fromDate != null){
             from = LocalDate.parse(fromDate);
         }
@@ -195,8 +206,10 @@ public class ApprentiDashController {
             to = LocalDate.parse(toDate);
         }
 
+        //Current work hours so far
         double totalHours = 0.0;
-        // retrieves the days associated to the logged in user
+        // retrieves the days based from date range and compute the
+        // total working hours
         for (Day curDay: userDays){
             LocalDate local = curDay.clockIn.toLocalDate();
 
@@ -206,11 +219,12 @@ public class ApprentiDashController {
             }
         }
 
-        System.out.println(to);
+        //Sort the list by clock-in dates
+        sortDateList();
+
+        //Add to model for display in summary.html
         m.addAttribute("fromDate", from);
         m.addAttribute("toDate", to);
-
-        sortDateList();
         m.addAttribute("days", dateRange);
         m.addAttribute("totalHours", totalHours);
         return "summary";
@@ -221,6 +235,10 @@ public class ApprentiDashController {
     /************************************ Controller to handle the Edit page ***************************************************************************/
     @GetMapping("/edit/{dayId}")
     public String getEdit(@PathVariable long dayId, Model m, Principal p) {
+        //Sets the necessary variables for the nav bar
+        loggedInStatusHelper(m, p);
+        m.addAttribute("currentPage", "clock_in");
+
         Day currentDay = dayRepository.findById(dayId).get();
         AppUser currentUser = userRepository.findByUsername(p.getName());
         if(!currentUser.days.contains(currentDay))
