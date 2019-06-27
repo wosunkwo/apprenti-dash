@@ -35,6 +35,7 @@ public class TimesheetController {
     DayRepository dayRepository;
 
     /********************************* The controller methods to handle our Punch In page **************************************************************/
+  //route to handle when a user first comes to the punch in page
     @GetMapping("/recordHour")
     public String recordHour(Model m, Principal p){
         //Sets the necessary variables for the nav bar
@@ -53,40 +54,28 @@ public class TimesheetController {
     public String clockInSave(Principal p, Model m) {
 
         AppUser currentUser = userRepository.findByUsername(p.getName());
+        LocalDateTime now = LocalDateTime.now();
 
+        //check what day instance variable needs to be updated based on the sequence of clockin-lunchin-lunchout-clockout
         if(buttonRenderHelper(currentUser).equals("clockIn")) {
-            currentUser.getCurrentday().setClockIn(LocalDateTime.now());
+            currentUser.getCurrentday().setClockIn(now);
         }else if(buttonRenderHelper(currentUser).equals(("lunchIn"))) {
-            currentUser.getCurrentday().setLunchStart(LocalDateTime.now());
+            currentUser.getCurrentday().setLunchStart(now);
         }else if(buttonRenderHelper(currentUser).equals("lunchOut")) {
-            currentUser.getCurrentday().setLunchEnd(LocalDateTime.now());
+            currentUser.getCurrentday().setLunchEnd(now);
         }else if(buttonRenderHelper(currentUser).equals("clockOut")){
-            currentUser.getCurrentday().setClockOut(LocalDateTime.now());
+            currentUser.getCurrentday().setClockOut(now);
         }
 
+        //set the day instance user to the current user
         currentUser.getCurrentday().setUser(currentUser);
         dayRepository.save(currentUser.getCurrentday());
         m.addAttribute("workStatus", buttonRenderHelper(currentUser));
         return "redirect:/recordHour";
     }
 
-    public String buttonRenderHelper(AppUser currentUser ){
-        if(currentUser.getCurrentday() == null) {
-            Day day = new Day();
-            currentUser.setCurrentday(day);
-        }
-        if(currentUser.getCurrentday().getClockIn() == null)
-            return "clockIn";
-        else if(currentUser.getCurrentday().getLunchStart() == null)
-            return "lunchIn";
-        else if(currentUser.getCurrentday().getLunchEnd() == null)
-            return "lunchOut";
-        else if(currentUser.getCurrentday().getClockOut() == null)
-            return "clockOut";
-        else
-            return "notNewDay";
-    }
 
+    //route to handle when a user wants to add an additional day to their record
     @GetMapping ("/additionalDayRecord")
     public RedirectView makeDay(Principal p){
         AppUser currentUser = userRepository.findByUsername(p.getName());
@@ -165,6 +154,7 @@ public class TimesheetController {
 
         Day currentDay = dayRepository.findById(dayId).get();
         AppUser currentUser = userRepository.findByUsername(p.getName());
+        //check if the day the user is trying to modify belongs to the user
         if(!currentUser.days.contains(currentDay))
             return "error";
         else{
@@ -177,35 +167,50 @@ public class TimesheetController {
     public String postEdit(long dayId,String clockIn, String clockOut, String lunchStart, String lunchEnd){
         Day currentDay = dayRepository.findById(dayId).get();
         LocalTime clockInLocalTime = LocalTime.parse(clockIn);
+        //update the clockIn to column to the newly edited hours and minutes
         currentDay.setClockIn(currentDay.getClockIn().withHour(clockInLocalTime.getHour()).withMinute(clockInLocalTime.getMinute()));
 
-        //code to handle if the user doesn't edit a particular field, that was already null
+        //code to check if the user make any modifications to the lunch start date field
         if(!(lunchStart.equals(""))){
             LocalTime lunchStartLocalTime = LocalTime.parse(lunchStart);
+            //check if the user never started a lunch in before trying to edit his/her lunch in
             if(currentDay.getLunchStart() == null){
+                //set the lunch start date to the clock in date
                 currentDay.setLunchStart(currentDay.getClockIn());
+                //overwrite the hours and minutes of the lunch start to match with the modifications the user made
                 currentDay.setLunchStart(currentDay.getLunchStart().withHour(lunchStartLocalTime.getHour()).withMinute(lunchStartLocalTime.getMinute()));
             }else{
+                //if the user already clicked on lunch in, just update the newly modified hours and minutes
                 currentDay.setLunchStart(currentDay.getLunchStart().withHour(lunchStartLocalTime.getHour()).withMinute(lunchStartLocalTime.getMinute()));
             }
         }
 
+        //code to check if the user make any modifications to the lunch end date field
         if(!(lunchEnd.equals(""))){
             LocalTime lunchEndLocalTime = LocalTime.parse(lunchEnd);
+            //check if the user never started a lunch out before trying to edit his/her lunch out
             if(currentDay.getLunchEnd() == null){
+                //set the lunch end date to the clock in date
                 currentDay.setLunchEnd(currentDay.getClockIn());
+                //overwrite the hours and minutes of the lunch end to match with the modifications the user made
                 currentDay.setLunchEnd(currentDay.getLunchEnd().withHour(lunchEndLocalTime.getHour()).withMinute(lunchEndLocalTime.getMinute()));
             }else{
+                //if the user already clicked on lunch out, just update the newly modified hours and minutes
                 currentDay.setLunchEnd(currentDay.getLunchEnd().withHour(lunchEndLocalTime.getHour()).withMinute(lunchEndLocalTime.getMinute()));
             }
         }
 
+        //code to check if the user make any modifications to the clock out date field
         if(!(clockOut.equals(""))){
             LocalTime clockOutLocalTime = LocalTime.parse(clockOut);
+            //check if the user never clocked out before trying to edit his/her clock out
             if(currentDay.getClockOut() == null){
+                //set the clock out date to the clock in date
                 currentDay.setClockOut(currentDay.getClockIn());
+                //overwrite the hours and minutes of the clock out to match with the modifications the user made
                 currentDay.setClockOut(currentDay.getClockOut().withHour(clockOutLocalTime.getHour()).withMinute(clockOutLocalTime.getMinute()));
             }else{
+                //if the user already clicked on clock out, just update the newly modified hours and minutes
                 currentDay.setClockOut(currentDay.getClockOut().withHour(clockOutLocalTime.getHour()).withMinute(clockOutLocalTime.getMinute()));
             }
         }
@@ -218,10 +223,14 @@ public class TimesheetController {
     public String deleteDay(@PathVariable long dayId, Principal p){
         Day currentDay = dayRepository.findById(dayId).get();
         AppUser currentUser = userRepository.findByUsername(p.getName());
+
+        //check if the day the user wants to delete belongs to the user
         if(!currentUser.days.contains(currentDay))
             return "error";
         else{
+            //check if the day the user wants to delete is a day the user has clocked in but not clocked out for
             if(currentUser.getCurrentday() == currentDay){
+                //reallocate the users currentday instance reference to null, before deleting the day
                 currentUser.setCurrentday(null);
                 userRepository.save(currentUser);
                 dayRepository.delete(currentDay);
@@ -265,6 +274,26 @@ public class TimesheetController {
 
 
     /******************************** All the helper function ************************************/
+
+    //helper function to handle the punch in page. It checks which day instance variable hasnt been clicked yet, and returns that to the view to
+    // display a button for it
+    public String buttonRenderHelper(AppUser currentUser ){
+        if(currentUser.getCurrentday() == null) {
+            Day day = new Day();
+            currentUser.setCurrentday(day);
+        }
+        if(currentUser.getCurrentday().getClockIn() == null)
+            return "clockIn";
+        else if(currentUser.getCurrentday().getLunchStart() == null)
+            return "lunchIn";
+        else if(currentUser.getCurrentday().getLunchEnd() == null)
+            return "lunchOut";
+        else if(currentUser.getCurrentday().getClockOut() == null)
+            return "clockOut";
+        else
+            return "notNewDay";
+    }
+
 
     //Checks if the user is logged in and sets the model attributes accordingly per the navbar requirements
     protected void loggedInStatusHelper(Model m, Principal p){
