@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Timesheet Summary</title>
@@ -61,7 +61,9 @@
             </tbody>
         </table>
         <h4 class="total_hours">Total Hours: <span th:text="${#numbers.formatDecimal(totalHours, 1, 2)}"></span></h4>
-
     </div>
+    <form class="clock_in_form" th:if="${not #lists.isEmpty(days)}" th:action="@{/timesheet}"  method="GET">
+            <button type="submit" name="" value="value">Download Timesheet</button>
+    </form>
 </body>
 </html>

@@ -23,7 +23,6 @@
                 <th>TIME OUT</th>
                 <th>LUNCH IN</th>
                 <th>LUNCH OUT</th>
-                <th>HOURS WORKED</th>
             </tr>
 
             <tr>
@@ -35,8 +34,7 @@
             <td> <input id="clockOut" type="time" name="clockOut" th:value="${#temporals.format(currentDay.getClockOut(),'HH:mm')}" ></td>
             <td> <input id="lunchStart" type="time" name="lunchStart" th:value="${#temporals.format(currentDay.getLunchStart(),'HH:mm')}" ></td>
             <td> <input id="lunchEnd" type="time" name="lunchEnd" th:value="${#temporals.format(currentDay.getLunchEnd(),'HH:mm')}"></td>
-            <td th:text="${#numbers.formatDecimal(currentDay.calculateDailyHours(), 1, 2)}"></td>
-
+           
             </tr>
 
         </table>
