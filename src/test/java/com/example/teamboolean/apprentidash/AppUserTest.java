@@ -60,4 +60,29 @@ public class AppUserTest {
         assertEquals("should return instance of a last name", "LastName", test.getLastName());
         assertEquals("should return instance of a manager name", "", test.getManagerName());
     }
+
+    @Test
+    public void appUserSetters(){
+
+        AppUser test = new AppUser();
+
+        String userName = "itsName";
+        String password = "test";
+        String firstName = "FirstName";
+        String lastName = "LastName";
+        String managerName = "ManagerName";
+
+        test.setUsername(userName);
+        test.setPassword(password);
+        test.setFirstName(firstName);
+        test.setLastName(lastName);
+        test.setManagerName(managerName);
+
+
+        assertEquals("should return instance of a username", "itsName", test.getUsername());
+        assertEquals("should return instance of a password", "test", test.getPassword());
+        assertEquals("should return instance of a first name", "FirstName", test.getFirstName());
+        assertEquals("should return instance of a last name", "LastName", test.getLastName());
+        assertEquals("should return instance of a manager name", "ManagerName" , test.getManagerName());
+    }
 }

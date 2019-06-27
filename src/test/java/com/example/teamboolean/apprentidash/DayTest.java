@@ -102,4 +102,68 @@ public class DayTest {
         Day test = new Day(startHour, endHour, lunchStart, lunchEnd, userTest);
         assertEquals("this should give back lunch start time", 1.53, test.calculateLunch(),0.01);
     }
+
+    //Test for getters
+    @Test
+    public void testDayGetters(){
+
+        LocalDateTime startHour = LocalDate.now().atTime(9, 0);
+        LocalDateTime endHour = LocalDate.now().atTime(18, 30);
+        LocalDateTime lunchStart = LocalDate.now().atTime(12, 10);
+        LocalDateTime lunchEnd = LocalDate.now().atTime(13, 10);
+
+        AppUser userTest = new AppUser("myusername", "mypassword", "joe", "sands",
+                "mngr");
+
+        Day test = new Day(startHour, endHour, lunchStart, lunchEnd, userTest);
+        assertEquals("this should give back start time", startHour, test.getClockIn());
+        assertEquals("this should give back end time", endHour, test.getClockOut());
+        assertEquals("this should give back lunch end time", lunchEnd, test.getLunchEnd());
+        assertEquals("this should give back lunch start time", lunchStart, test.getLunchStart());
+    }
+
+    //Test for setters
+    @Test
+    public void testDaySetters(){
+
+        Day test = new Day();
+
+        LocalDateTime startHour = LocalDate.now().atTime(9, 0);
+        LocalDateTime endHour = LocalDate.now().atTime(18, 30);
+        LocalDateTime lunchStart = LocalDate.now().atTime(12, 10);
+        LocalDateTime lunchEnd = LocalDate.now().atTime(13, 10);
+
+        AppUser userTest = new AppUser("myusername", "mypassword", "joe", "sands",
+                "mngr");
+
+        test.setClockOut(endHour);
+        test.setClockIn(startHour);
+        test.setLunchEnd(lunchEnd);
+        test.setLunchStart(lunchStart);
+
+        assertEquals("this should give back start time", startHour, test.clockIn);
+        assertEquals("this should give back end time", endHour, test.clockOut);
+        assertEquals("this should give back lunch end time", lunchEnd, test.lunchEnd);
+        assertEquals("this should give back lunch start time", lunchStart, test.lunchStart);
+    }
+
+    //test toString
+    @Test
+    public void testDayToString(){
+        LocalDateTime startHour = LocalDate.now().atTime(9, 0);
+        LocalDateTime endHour = LocalDate.now().atTime(18, 30);
+        LocalDateTime lunchStart = LocalDate.now().atTime(12, 10);
+        LocalDateTime lunchEnd = LocalDate.now().atTime(13, 10);
+
+        AppUser userTest = new AppUser("myusername", "mypassword", "joe", "sands",
+                "mngr");
+
+        Day test = new Day(startHour, endHour, lunchStart, lunchEnd, userTest);
+
+        String result = "Thursday,06-27-2019,09:00,18:30,1.0,8.5";
+        assertEquals("this should give string with day format", result, test.toString());
+    }
+
+    //If there is more time, we would like to test edge cases such as null values, one value-missing, etc
+
 }

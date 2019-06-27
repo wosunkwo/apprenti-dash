@@ -18,9 +18,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -76,9 +80,12 @@ public class IndividualRouteTest {
     @WithMockUser
     @Test
     public void test_recordHour() throws Exception {
-        this.mockMvc.perform(get("/recordHour").with(testUser()));
+        this.mockMvc.perform(get("/recordHour").with(testUser()))
+            .andExpect(content().string(containsString("Clock In")));;
 
     }
+
+    
 
     @WithMockUser
     @Test
@@ -89,7 +96,10 @@ public class IndividualRouteTest {
     @WithMockUser
     @Test
     public void test_summary() throws Exception {
-        this.mockMvc.perform(get("/summary").with(testUser()));
+        this.mockMvc.perform(get("/summary")
+                .with(testUser()))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
 
@@ -106,7 +116,8 @@ public class IndividualRouteTest {
     @Test
     public void test_delete() throws Exception {
         this.mockMvc.perform(get("/delete/{dayId}", 5)
-                .with(testUser()));
+                .with(testUser()))
+                .andExpect(status().isOk());
 
     }
 
