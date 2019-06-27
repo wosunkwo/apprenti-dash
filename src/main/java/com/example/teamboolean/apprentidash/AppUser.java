@@ -24,14 +24,6 @@ public class AppUser implements UserDetails {
     @OneToMany (mappedBy = "user")
     List<Day> days;
 
-    public Day getCurrentday() {
-        return Currentday;
-    }
-
-    public void setCurrentday(Day currentday) {
-        Currentday = currentday;
-    }
-
     @OneToOne
     private
     Day Currentday;
@@ -101,6 +93,16 @@ public class AppUser implements UserDetails {
     public void setDays(List<Day> days) {
         this.days = days;
     }
+
+
+    public Day getCurrentday() {
+        return Currentday;
+    }
+
+    public void setCurrentday(Day currentday) {
+        Currentday = currentday;
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
