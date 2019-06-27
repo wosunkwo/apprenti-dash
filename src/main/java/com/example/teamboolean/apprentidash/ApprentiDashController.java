@@ -53,6 +53,8 @@ public class ApprentiDashController {
     private DayOfWeek firstDay;
     //Day list based from date range
     private List<Day> dateRange;
+    //total hours worked
+    private double totalHours;
 
     @Autowired
     UserRepository userRepository;
@@ -205,7 +207,7 @@ public class ApprentiDashController {
         }
 
         //Current work hours so far
-        double totalHours = 0.0;
+        totalHours = 0.00;
         // retrieves the days based from date range and compute the
         // total working hours
         for (Day curDay: userDays){
@@ -361,34 +363,24 @@ public class ApprentiDashController {
 
         List<DateString> dateStrings = new ArrayList<>();
 
-        dateStrings = formatDate();
+       // dateStrings = formatDate();
 
-        ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(),
-                CsvPreference.STANDARD_PREFERENCE);
+        PrintWriter csvWriter = response.getWriter();
 
-        String[] header = { "Day", "Date", "TimeIn", "TimeOut",
-                "Lunch", "DailyHours"};
+        String header = "Day,Date,Time In,Time Out,Lunch,Daily Hours";
+        csvWriter.println(header);
 
-        csvWriter.writeHeader(header);
 
-        for (DateString curDate : dateStrings) {
-            csvWriter.write(curDate, header);
+        for(Day curDay: dateRange){
+
+            csvWriter.println(curDay.toString());
         }
+
+
+        csvWriter.println(",,,,Total Hours:," + totalHours);
 
         csvWriter.close();
 
-
-        //create a csv writer
-//        StatefulBeanToCsv<DateString> writer = new StatefulBeanToCsvBuilder<DateString>(response.getWriter())
-//                .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
-//                .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
-//                .withOrderedResults(false)
-//                .build();
-//
-//        //write all users to csv file
-//        writer.write(dateStrings);
-//
-//        response.getWriter().close();
 
     }
 

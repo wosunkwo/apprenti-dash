@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -118,6 +119,37 @@ public class Day {
 
         return result;
         
+    }
+
+    public String toString(){
+        //day string
+        DateTimeFormatter dayFormat = DateTimeFormatter.ofPattern("EEEE");
+        String day = clockIn.format(dayFormat);
+        //date string
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        String date = clockIn.format(dateFormat);
+        //Time in and time out
+        DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
+        String timeIn = clockIn.format(timeFormat);
+
+        String timeOut = "";
+        if(clockOut != null){
+            timeOut = clockOut.format(timeFormat);
+        }
+
+        double lunch = this.calculateLunch();
+        double dailyHours = this.calculateDailyHours();
+
+        StringBuilder result = new StringBuilder();
+        result.append(day + ",");
+        result.append(date + ",");
+        result.append(timeIn + ",");
+        result.append(timeOut + ",");
+        result.append(lunch + ",");
+        result.append(dailyHours);
+
+        return result.toString();
+
     }
 
 
