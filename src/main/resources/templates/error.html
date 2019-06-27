@@ -9,24 +9,26 @@
     <link rel="stylesheet" type="text/css" href="modules.css">
 </head>
 <body>
-    <h3>Oops, there seems to be a problem.</h3>
-    <table>
-        <tr>
-            <td>Path</td>
-            <td th:text="${path}"/>
-        </tr>
-        <tr>
-            <td>Error</td>
-            <td th:text="${error}"/>
-        </tr>
-        <tr>
-            <td>Status</td>
-            <td th:text="${status}"/>
-        </tr>
-        <tr>
-            <td>Message</td>
-            <td th:text="${message}"/>
-        </tr>
-    </table>
+    <div class="main_content">
+        <h3>Oops, there seems to be a problem.</h3>
+        <table class="error_table">
+            <tr>
+                <td>Path</td>
+                <td th:text="${path}"/>
+            </tr>
+            <tr>
+                <td>Error</td>
+                <td th:text="${error}"/>
+            </tr>
+            <tr>
+                <td>Status</td>
+                <td th:text="${status}"/>
+            </tr>
+            <tr>
+                <td>Message</td>
+                <td th:text="${message}"/>
+            </tr>
+        </table>
+    </div>
 </body>
 </html>
