@@ -244,6 +244,7 @@ public class ApprentiDashController {
         if(!currentUser.days.contains(currentDay))
             return "error";
         else{
+
             m.addAttribute("currentDay", currentDay);
             return "edit";
         }
@@ -253,20 +254,42 @@ public class ApprentiDashController {
     public String postEdit(long dayId,String clockIn, String clockOut, String lunchStart, String lunchEnd){
         Day currentDay = dayRepository.findById(dayId).get();
         LocalTime clockInLocalTime = LocalTime.parse(clockIn);
-        LocalTime clockOutLocalTime = LocalTime.parse(clockOut);
-        LocalTime lunchStartLocalTime = LocalTime.parse(lunchStart);
-        LocalTime lunchEndLocalTime = LocalTime.parse(lunchEnd);
-
         currentDay.setClockIn(currentDay.getClockIn().withHour(clockInLocalTime.getHour()).withMinute(clockInLocalTime.getMinute()));
-        currentDay.setClockOut(currentDay.getClockOut().withHour(clockOutLocalTime.getHour()).withMinute(clockOutLocalTime.getMinute()));
-        currentDay.setLunchStart(currentDay.getLunchStart().withHour(lunchStartLocalTime.getHour()).withMinute(lunchStartLocalTime.getMinute()));
-        currentDay.setLunchEnd(currentDay.getLunchEnd().withHour(lunchEndLocalTime.getHour()).withMinute(lunchEndLocalTime.getMinute()));
 
+        //code to handle if the user doesn't edit a particular field, that was already null
+        if(!(lunchStart.equals(""))){
+            LocalTime lunchStartLocalTime = LocalTime.parse(lunchStart);
+            if(currentDay.getLunchStart() == null){
+                currentDay.setLunchStart(currentDay.getClockIn());
+                currentDay.setLunchStart(currentDay.getLunchStart().withHour(lunchStartLocalTime.getHour()).withMinute(lunchStartLocalTime.getMinute()));
+            }else{
+                currentDay.setLunchStart(currentDay.getLunchStart().withHour(lunchStartLocalTime.getHour()).withMinute(lunchStartLocalTime.getMinute()));
+            }
+        }
+
+        if(!(lunchEnd.equals(""))){
+            LocalTime lunchEndLocalTime = LocalTime.parse(lunchEnd);
+            if(currentDay.getLunchEnd() == null){
+                currentDay.setLunchEnd(currentDay.getClockIn());
+                currentDay.setLunchEnd(currentDay.getLunchEnd().withHour(lunchEndLocalTime.getHour()).withMinute(lunchEndLocalTime.getMinute()));
+            }else{
+                currentDay.setLunchEnd(currentDay.getLunchEnd().withHour(lunchEndLocalTime.getHour()).withMinute(lunchEndLocalTime.getMinute()));
+            }
+        }
+
+        if(!(clockOut.equals(""))){
+            LocalTime clockOutLocalTime = LocalTime.parse(clockOut);
+            if(currentDay.getClockOut() == null){
+                currentDay.setClockOut(currentDay.getClockIn());
+                currentDay.setClockOut(currentDay.getClockOut().withHour(clockOutLocalTime.getHour()).withMinute(clockOutLocalTime.getMinute()));
+            }else{
+                currentDay.setClockOut(currentDay.getClockOut().withHour(clockOutLocalTime.getHour()).withMinute(clockOutLocalTime.getMinute()));
+            }
+        }
         dayRepository.save(currentDay);
-
         return "redirect:/summary";
     }
-//TODO Fix the bug that doesnt let me delete day instances that have not been clocked out yet
+
     @GetMapping("/delete/{dayId}")
     public String deleteDay(@PathVariable long dayId, Principal p){
         Day currentDay = dayRepository.findById(dayId).get();
@@ -274,10 +297,15 @@ public class ApprentiDashController {
         if(!currentUser.days.contains(currentDay))
             return "error";
         else{
-            dayRepository.delete(currentDay);
+            if(currentUser.getCurrentday() == currentDay){
+                currentUser.setCurrentday(null);
+                userRepository.save(currentUser);
+                dayRepository.delete(currentDay);
+            }else{
+                dayRepository.delete(currentDay);
+            }
             return "redirect:/summary";
         }
-
     }
 
     /************************************ End of Controller to handle the Edit page ***************************************************************************/
