@@ -25,6 +25,10 @@ Our summary page displays all your timesheet data for easy reference.
 
 Forgot to Clock In? Need to adjust your hours? You can fully edit all of your timesheet data.
 
+#### Download a CSV File
+
+From the summary page, users can download a csv file of their clock-in times and hours for their chosen date range. 
+
 
 ## How to Use
 
