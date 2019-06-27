@@ -18,14 +18,6 @@ import java.util.List;
 
 @Controller
 public class ApprentiDashController {
-    //US Zone ID
-    private final static ZoneId USZONE = ZoneId.of("America/Los_Angeles");
-    //first Day of the week
-    private DayOfWeek firstDay;
-    //Day list based from date range
-    private List<Day> dateRange;
-    //total hours worked
-    private double totalHours;
 
     @Autowired
     UserRepository userRepository;
@@ -36,7 +28,7 @@ public class ApprentiDashController {
     @Autowired
     DayRepository dayRepository;
 
-    Day currentDay = new Day();
+    TimesheetController timesheetController = new TimesheetController();
 
     //Root route
     @GetMapping("/")
@@ -56,7 +48,7 @@ public class ApprentiDashController {
     @GetMapping("/home")
     public String getHome(Model m, Principal p){
         //Sets the necessary variables for the nav bar
-        loggedInStatusHelper(m, p);
+        timesheetController.loggedInStatusHelper(m, p);
         m.addAttribute("currentPage", "home");
         return "home";
     }
@@ -65,7 +57,7 @@ public class ApprentiDashController {
     @GetMapping("/login")
     public String getLogin(Model m, Principal p){
         //Sets the necessary variables for the nav bar
-        loggedInStatusHelper(m, p);
+        timesheetController.loggedInStatusHelper(m, p);
         m.addAttribute("currentPage", "login");
         return "login";
     }
@@ -74,7 +66,7 @@ public class ApprentiDashController {
     @GetMapping("/signup")
     public String startSignUp(Model m, Principal p){
         //Sets the necessary variables for the nav bar
-        loggedInStatusHelper(m, p);
+        timesheetController.loggedInStatusHelper(m, p);
         m.addAttribute("currentPage", "signup");
         return "signup";
     }
@@ -92,31 +84,8 @@ public class ApprentiDashController {
         }
     }
 
+    /************************************ End of Controller to handle the Edit page ***************************************************************************/
 
-
-
-
-
-    //Checks if the user is logged in and sets the model attributes accordingly per the navbar requirements
-    private void loggedInStatusHelper(Model m, Principal p){
-
-        //Navbar required variables for knowing if user is logged in and their name for display
-        boolean isLoggedIn;
-        String currentUserFirstName;
-
-        //Check if the user is logged in and sets the variables
-        if(p == null){
-            isLoggedIn = false;
-            currentUserFirstName = "Visitor";
-        }else {
-            isLoggedIn = true;
-            currentUserFirstName = userRepository.findByUsername(p.getName()).getFirstName();
-        }
-
-        //add the attributes to the passed in model
-        m.addAttribute("isLoggedIn", isLoggedIn);
-        m.addAttribute("userFirstName", currentUserFirstName);
-    }
 
     //help function to check if the username exist in database
     public boolean checkUserName(String username){
