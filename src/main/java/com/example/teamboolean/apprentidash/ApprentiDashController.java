@@ -3,6 +3,7 @@ package com.example.teamboolean.apprentidash;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.orm.hibernate5.HibernateOperations;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -10,15 +11,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Null;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -44,6 +45,8 @@ public class ApprentiDashController {
     private DayOfWeek firstDay;
     //Day list based from date range
     private List<Day> dateRange;
+    //total hours worked
+    private double totalHours;
 
     @Autowired
     UserRepository userRepository;
@@ -207,7 +210,7 @@ public class ApprentiDashController {
         }
 
         //Current work hours so far
-        double totalHours = 0.0;
+        totalHours = 0.00;
         // retrieves the days based from date range and compute the
         // total working hours
         for (Day curDay: userDays){
@@ -345,6 +348,34 @@ public class ApprentiDashController {
                 return o1.clockIn.compareTo(o2.clockIn);
             }
         });
+    }
+
+    /***************************** CSV CONTROLLER ***************************/
+
+    @GetMapping("/timesheet")
+    public void exportCSV(HttpServletResponse response) throws Exception {
+
+        //set file name and content type
+        String filename = "timesheet.csv";
+
+        response.setContentType("text/csv");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + filename + "\"");
+
+        //Write to file and download
+        PrintWriter csvWriter = response.getWriter();
+
+        String header = "Day,Date,Time In,Time Out,Lunch,Daily Hours";
+        csvWriter.println(header);
+
+        for(Day curDay: dateRange){
+
+            csvWriter.println(curDay.toString());
+        }
+
+        csvWriter.println(",,,,Total Hours:," + totalHours);
+        csvWriter.close();
+
     }
 
 }
