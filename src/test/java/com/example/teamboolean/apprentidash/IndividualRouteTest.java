@@ -21,8 +21,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -108,16 +107,16 @@ public class IndividualRouteTest {
     @WithMockUser
     @Test
     public void test_edit() throws Exception {
-        this.mockMvc.perform(get("/edit/{dayId}", 4).with(testUser()));
+        this.mockMvc.perform(get("/edit/{dayId}", 6).with(testUser()));
     }
 
     /**** NOTE WHEN RUNNING THIS TEST: dayId should be existing in the database to pass the test. Replace id (i.e 5)*******/
     @WithMockUser
     @Test
     public void test_delete() throws Exception {
-        this.mockMvc.perform(get("/delete/{dayId}", 5)
+        this.mockMvc.perform(delete("/delete/{dayId}", 7)
                 .with(testUser()))
-                .andExpect(status().isOk());
+                .andExpect(status().is3xxRedirection());
 
     }
 
