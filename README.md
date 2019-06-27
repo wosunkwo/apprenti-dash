@@ -4,7 +4,9 @@ This is a project designed to help apprentices clock their hours for OTJ.
 
 Can also be used for any general timesheet needs. 
 
-You can find the live deployment [here](http://apprenti.us-west-2.elasticbeanstalk.com/). 
+You can find the live deployment [here](http://apprenti.us-west-2.elasticbeanstalk.com/).
+
+You can find our mock press release [here](./PressRelease.md) 
 
 ## Features
 
@@ -47,9 +49,9 @@ If you want to fork our code and use it for your own project, you will need to t
     For example: 
     
         
-    spring.datasource.url=${DATABASE_URL}
-    spring.datasource.username=${DATABASE_USERNAME}
-    spring.datasource.password=${DATABASE_PASSWORD}
+        spring.datasource.url=${DATABASE_URL}
+        spring.datasource.username=${DATABASE_USERNAME}
+        spring.datasource.password=${DATABASE_PASSWORD}
     
    Set your username and password according to your psql settings. 
     
