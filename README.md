@@ -1,6 +1,6 @@
 # Apprentice Dashboard
 
-This is a project designed to help apprentices clock their hours for OTJ. 
+This is a project designed to help apprentices clock their hours for OJT. 
 
 Can also be used for any general timesheet needs. 
 
