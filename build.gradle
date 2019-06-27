@@ -29,7 +29,4 @@ dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
-	compile 'com.opencsv:opencsv:4.6'
-	compile 'net.sf.supercsv:super-csv:2.4.0'
-	compile 'org.slf4j:slf4j-api:1.7.4'
 }

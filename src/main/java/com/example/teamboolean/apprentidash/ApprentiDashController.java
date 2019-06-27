@@ -1,11 +1,6 @@
 package com.example.teamboolean.apprentidash;
 
 
-import com.opencsv.CSVWriter;
-import com.opencsv.bean.ColumnPositionMappingStrategy;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
-import com.opencsv.exceptions.CsvException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -19,9 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-import org.supercsv.io.CsvBeanWriter;
-import org.supercsv.io.ICsvBeanWriter;
-import org.supercsv.prefs.CsvPreference;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
@@ -361,66 +353,20 @@ public class ApprentiDashController {
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + filename + "\"");
 
-        List<DateString> dateStrings = new ArrayList<>();
-
-       // dateStrings = formatDate();
-
+        //Write to file and download
         PrintWriter csvWriter = response.getWriter();
 
         String header = "Day,Date,Time In,Time Out,Lunch,Daily Hours";
         csvWriter.println(header);
-
 
         for(Day curDay: dateRange){
 
             csvWriter.println(curDay.toString());
         }
 
-
         csvWriter.println(",,,,Total Hours:," + totalHours);
-
         csvWriter.close();
 
-
     }
-
-
-
-
-
-    private List<DateString> formatDate(){
-
-        List<DateString> dates = new ArrayList<>();
-
-        for(Day curDay: dateRange){
-            //day string
-            DateTimeFormatter dayFormat = DateTimeFormatter.ofPattern("EEEE");
-            String day = curDay.clockIn.format(dayFormat);
-            //date string
-            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-            String date = curDay.clockIn.format(dateFormat);
-            //Time in and time out
-            DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
-            String timeIn = curDay.clockIn.format(timeFormat);
-
-            String timeOut = "";
-            if(curDay.clockOut != null){
-                timeOut = curDay.clockOut.format(timeFormat);
-            }
-
-            double lunch = curDay.calculateLunch();
-            double dailyHours = curDay.calculateDailyHours();
-
-            DateString curDate = new DateString(day, date, timeIn, timeOut, lunch, dailyHours);
-            System.out.println(curDate);
-            dates.add(curDate);
-        }
-
-        return dates;
-    }
-
-
-
-
 
 }

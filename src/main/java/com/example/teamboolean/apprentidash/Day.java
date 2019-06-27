@@ -121,6 +121,10 @@ public class Day {
         
     }
 
+    /**
+     * Method to return string separated by comma
+     * @return String
+     */
     public String toString(){
         //day string
         DateTimeFormatter dayFormat = DateTimeFormatter.ofPattern("EEEE");
