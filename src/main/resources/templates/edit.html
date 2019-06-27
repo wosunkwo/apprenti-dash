@@ -33,7 +33,6 @@
             <td> <input id="lunchEnd" type="time" name="lunchEnd" th:value="${#temporals.format(currentDay.getLunchEnd(),'HH:mm')}"></td>
             <td th:text="${#numbers.formatDecimal(currentDay.calculateDailyHours(), 1, 2)}"></td>
             <td> <input type="submit" value="Change"> </td>
-<!--            <td> <button><a th:href="'/delete/'+ ${currentDay.getId()}"><span>Delete</span></a></button></td>-->
         </form>
         <td><button><a th:href="'/delete/'+ ${currentDay.getId()}"><span>Delete</span></a></button></td>
     </tr>

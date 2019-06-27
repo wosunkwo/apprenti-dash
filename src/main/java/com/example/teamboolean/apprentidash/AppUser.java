@@ -24,6 +24,18 @@ public class AppUser implements UserDetails {
     @OneToMany (mappedBy = "user")
     List<Day> days;
 
+    public Day getCurrentday() {
+        return Currentday;
+    }
+
+    public void setCurrentday(Day currentday) {
+        Currentday = currentday;
+    }
+
+    @OneToOne
+    private
+    Day Currentday;
+
     public AppUser(){}
 
     public AppUser(String username, String password, String firstName, String lastName, String managerName) {
