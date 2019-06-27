@@ -42,7 +42,7 @@ public class TimesheetController {
         loggedInStatusHelper(m, p);
         m.addAttribute("currentPage", "clock_in");
         //Sets status for knowing which button to show
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(USZONE);
         AppUser currentUser = userRepository.findByUsername(p.getName());
         m.addAttribute("workStatus", buttonRenderHelper(currentUser));
         m.addAttribute("todayDate", now);
@@ -54,7 +54,7 @@ public class TimesheetController {
     public String clockInSave(Principal p, Model m) {
 
         AppUser currentUser = userRepository.findByUsername(p.getName());
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(USZONE);
 
         //check what day instance variable needs to be updated based on the sequence of clockin-lunchin-lunchout-clockout
         if(buttonRenderHelper(currentUser).equals("clockIn")) {
