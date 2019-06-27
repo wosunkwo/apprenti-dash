@@ -40,6 +40,16 @@ public class RouteTest {
     }
 
     @Test
+    public void test_home() throws Exception {
+        this.mockMvc.perform(get("/home")).andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    public void test_login() throws Exception {
+        this.mockMvc.perform(get("/login")).andExpect(status().is3xxRedirection());
+    }
+
+    @Test
     public void test_signup() throws Exception {
         this.mockMvc.perform(get("/signup")).andExpect(status().isOk());
     }
@@ -48,6 +58,31 @@ public class RouteTest {
     @Test
     public void test_recordHour() throws Exception {
         this.mockMvc.perform(get("/recordHour")).andExpect(status().isOk());
+    }
+
+    @Test
+    public void test_additionalDay() throws Exception {
+        this.mockMvc.perform(get("/additionalDayRecord")).andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    public void test_summary() throws Exception {
+        this.mockMvc.perform(get("/summary")).andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    public void test_edit() throws Exception {
+        this.mockMvc.perform(get("/edit/1")).andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    public void test_delete() throws Exception {
+        this.mockMvc.perform(get("/delete/1")).andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    public void test_timesheet() throws Exception {
+        this.mockMvc.perform(get("/timesheet")).andExpect(status().is3xxRedirection());
     }
 
 

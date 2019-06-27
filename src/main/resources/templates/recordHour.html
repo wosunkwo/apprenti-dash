@@ -50,12 +50,14 @@
                         value="value">Clock Out</button>
             </div>
 
-            <div class="doneForTheDay" th:if="${workStatus == 'notNewDay'}">
-                <p> You are done for<span th:text="${#temporals.dayOfWeekName(todayDate)}"></span>. See you tomorrow.</p>
-                <!--TODO Make this button the size of the link-->
-                <button type="button"><a href="/additionalDayRecord">Start a New Day</a></button>
-            </div>
+
         </form>
+        <div class="doneForTheDay" th:if="${workStatus == 'notNewDay'}">
+            <p> You are done for <span th:text="${#temporals.dayOfWeekName(todayDate)}"></span>. See you tomorrow.</p>
+            <form class="clock_in_form" th:action="@{/additionalDayRecord}"  method="GET">
+                <button type="submit" name="name" value="value">Start a New Day</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>
