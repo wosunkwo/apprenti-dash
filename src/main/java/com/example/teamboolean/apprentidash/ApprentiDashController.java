@@ -117,49 +117,60 @@ public class ApprentiDashController {
         loggedInStatusHelper(m, p);
         m.addAttribute("currentPage", "clock_in");
         //Sets status for knowing which button to show
-        String todayDate =  java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneOffset.UTC));
-        m.addAttribute("workStatus", buttonRenderHelper());
-        m.addAttribute("todayDate", todayDate);
+        LocalDateTime now = LocalDateTime.now();
+        AppUser currentUser = userRepository.findByUsername(p.getName());
+        m.addAttribute("workStatus", buttonRenderHelper(currentUser));
+        m.addAttribute("todayDate", now);
         return "recordHour";
     }
 
 //Route to handle our clock in button
     @PostMapping(value="/recordHour", params="name=value")
     public String clockInSave(Principal p, Model m) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-        boolean endOfDay = false;
 
-        if(buttonRenderHelper().equals("clockIn")) {
-            currentDay.setClockIn(now);
-        }else if(buttonRenderHelper().equals(("lunchIn"))) {
-            currentDay.setLunchStart(now);
-        }else if(buttonRenderHelper().equals("lunchOut")) {
-            currentDay.setLunchEnd(now);
-        }else if(buttonRenderHelper().equals("clockOut")){
-            currentDay.setClockOut(now);
-            endOfDay = true;
+        AppUser currentUser = userRepository.findByUsername(p.getName());
+
+        if(buttonRenderHelper(currentUser).equals("clockIn")) {
+            currentUser.getCurrentday().setClockIn(LocalDateTime.now());
+        }else if(buttonRenderHelper(currentUser).equals(("lunchIn"))) {
+            currentUser.getCurrentday().setLunchStart(LocalDateTime.now());
+        }else if(buttonRenderHelper(currentUser).equals("lunchOut")) {
+            currentUser.getCurrentday().setLunchEnd(LocalDateTime.now());
+        }else if(buttonRenderHelper(currentUser).equals("clockOut")){
+            currentUser.getCurrentday().setClockOut(LocalDateTime.now());
         }
-        currentDay.setUser(userRepository.findByUsername(p.getName()));
-        dayRepository.save(currentDay);
-        if(endOfDay){
-            currentDay = new Day();
-        }
-        m.addAttribute("workStatus", buttonRenderHelper());
+
+        currentUser.getCurrentday().setUser(currentUser);
+        dayRepository.save(currentUser.getCurrentday());
+        m.addAttribute("workStatus", buttonRenderHelper(currentUser));
         return "redirect:/recordHour";
     }
 
-    public String buttonRenderHelper(){
-        if(currentDay.getClockIn() == null)
+    public String buttonRenderHelper(AppUser currentUser ){
+        if(currentUser.getCurrentday() == null) {
+            Day day = new Day();
+            currentUser.setCurrentday(day);
+        }
+        if(currentUser.getCurrentday().getClockIn() == null)
             return "clockIn";
-        else if(currentDay.getLunchStart() == null)
+        else if(currentUser.getCurrentday().getLunchStart() == null)
             return "lunchIn";
-        else if(currentDay.getLunchEnd() == null)
+        else if(currentUser.getCurrentday().getLunchEnd() == null)
             return "lunchOut";
-        else if(currentDay.getClockOut() == null)
+        else if(currentUser.getCurrentday().getClockOut() == null)
             return "clockOut";
-        return null;
+        else
+            return "notNewDay";
     }
+
+    @GetMapping ("/additionalDayRecord")
+    public RedirectView makeDay(Principal p){
+        AppUser currentUser = userRepository.findByUsername(p.getName());
+        currentUser.setCurrentday(null);
+        userRepository.save(currentUser);
+        return new RedirectView("/recordHour");
+    }
+
 /******************************** End of the controller for handle Punch In page ********************************************************************/
 
 /******************************** Summary Route ******************************************************************************/
@@ -255,7 +266,7 @@ public class ApprentiDashController {
 
         return "redirect:/summary";
     }
-
+//TODO Fix the bug that doesnt let me delete day instances that have not been clocked out yet
     @GetMapping("/delete/{dayId}")
     public String deleteDay(@PathVariable long dayId, Principal p){
         Day currentDay = dayRepository.findById(dayId).get();
@@ -268,8 +279,6 @@ public class ApprentiDashController {
         }
 
     }
-
-
 
     /************************************ End of Controller to handle the Edit page ***************************************************************************/
 
