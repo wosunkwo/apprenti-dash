@@ -114,9 +114,9 @@ public class IndividualRouteTest {
     @WithMockUser
     @Test
     public void test_delete() throws Exception {
-        this.mockMvc.perform(delete("/delete/{dayId}", 7)
+        this.mockMvc.perform(get("/delete/{dayId}", 7)
                 .with(testUser()))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().isOk());
 
     }
 
