@@ -220,7 +220,7 @@ public class TimesheetController {
     }
 
 
-    @DeleteMapping("/delete/{dayId}")
+    @GetMapping("/delete/{dayId}")
     public String deleteDay(@PathVariable long dayId, Principal p){
         Day currentDay = dayRepository.findById(dayId).get();
         AppUser currentUser = userRepository.findByUsername(p.getName());
