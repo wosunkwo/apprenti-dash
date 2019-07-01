@@ -44,6 +44,7 @@ public class TimesheetController {
         m.addAttribute("currentPage", "clock_in");
         //Sets status for knowing which button to show
         LocalDateTime now = LocalDateTime.now(USZONE);
+        //Suggestion to show the users username instead of the first name, because its less operations on the DB
         AppUser currentUser = userRepository.findByUsername(p.getName());
         m.addAttribute("workStatus", buttonRenderHelper(currentUser));
         m.addAttribute("todayDate", now);
